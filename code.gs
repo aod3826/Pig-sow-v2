@@ -125,13 +125,16 @@ function getSettingsMap() {
 }
 
 // ── AUTH ─────────────────────────────────────────────────────
+// v1: เปรียบรหัสผ่านตรงๆ (plain text) ง่ายต่อการทดสอบ
+// ภายหลังสามารถเปลี่ยนมาใช้ hash ได้โดยแทน u.password === password
 function login(data) {
   const { username, password } = data;
   const sheet = getSheet(SHEETS.USERS);
   const users = sheetToObjects(sheet);
-  const hash = simpleHash(password);
   const user = users.find(u =>
-    u.username === username && u.password_hash === hash && u.is_active == true
+    u.username === username &&
+    u.password === password &&
+    (u.is_active === true || u.is_active === 'TRUE')
   );
   if (!user) return { success: false, error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' };
   return {
@@ -644,4 +647,227 @@ function updateSowStatus(sow_id, status) {
       return;
     }
   }
+}
+
+// ════════════════════════════════════════════════════════════════
+// 🚀 initSheets() — รันครั้งเดียวเพื่อตั้งค่าฐานข้อมูลทั้งหมด
+// วิธีใช้: Apps Script Editor > เลือก initSheets > กด ▶ Run
+// ════════════════════════════════════════════════════════════════
+function initSheets() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ui = SpreadsheetApp.getUi();
+  const today = formatDate(new Date());
+
+  Logger.log('🚀 เริ่ม initSheets สำหรับนิพนธ์ฟาร์ม...');
+
+  // ── ฟังก์ชันช่วย: สร้าง Sheet ใหม่หรือล้างของเดิม ──────────
+  function createOrClearSheet(name) {
+    let sheet = ss.getSheetByName(name);
+    if (sheet) {
+      sheet.clearContents();
+      Logger.log(`  ♻️  ล้าง Sheet: ${name}`);
+    } else {
+      sheet = ss.insertSheet(name);
+      Logger.log(`  ✅ สร้าง Sheet: ${name}`);
+    }
+    return sheet;
+  }
+
+  // ── 1. SETTINGS ─────────────────────────────────────────────
+  const settingsSheet = createOrClearSheet('SETTINGS');
+  settingsSheet.getRange(1, 1, 1, 3).setValues([['key', 'value', 'label']]);
+  settingsSheet.getRange(2, 1, 12, 3).setValues([
+    ['FARM_NAME',           'นิพนธ์ฟาร์ม',  'ชื่อฟาร์ม'],
+    ['GESTATION_DAYS',      '114',           'วันอุ้มท้องมาตรฐาน'],
+    ['LACTATION_TARGET',    '21',            'เป้าหมายวันเลี้ยงลูก'],
+    ['WSI_TARGET',          '7',             'เป้าหมาย WSI (วัน)'],
+    ['PREG_CHECK_DAY1',     '21',            'ตรวจท้องรอบ 1 (วันที่นับจากผสม)'],
+    ['PREG_CHECK_DAY2',     '42',            'ตรวจท้องรอบ 2 (วันที่นับจากผสม)'],
+    ['MOVE_FARROWING_DAY',  '110',           'ย้ายเข้าเล้าคลอด (วันที่นับจากผสม)'],
+    ['CULL_MAX_PARITY',     '8',             'คัดทิ้งเมื่อท้องที่ >= ค่านี้'],
+    ['CULL_MIN_LIVE_BORN',  '10',            'คัดทิ้งเมื่อ Live Born เฉลี่ย < ค่านี้'],
+    ['CULL_MAX_RETURNS',    '3',             'คัดทิ้งเมื่อกลับสัดเกิน N ครั้ง'],
+    ['PSY_TARGET',          '28',            'เป้าหมาย PSY (ลูก/แม่/ปี)'],
+    ['LINE_TOKEN',          '',              'LINE Notify Token (ถ้ามี)'],
+  ]);
+  settingsSheet.getRange('A1:C1').setFontWeight('bold').setBackground('#d9ead3');
+  settingsSheet.setColumnWidth(1, 180);
+  settingsSheet.setColumnWidth(2, 140);
+  settingsSheet.setColumnWidth(3, 240);
+
+  // ── 2. USERS ────────────────────────────────────────────────
+  // password เก็บเป็น plain text (v1 ทดสอบ) — เปลี่ยนได้ภายหลัง
+  const usersSheet = createOrClearSheet('USERS');
+  usersSheet.getRange(1, 1, 1, 5).setValues([['username', 'password', 'role', 'display_name', 'is_active']]);
+  usersSheet.getRange(2, 1, 3, 5).setValues([
+    ['aod',    'aod1234',   'ADMIN', 'คุณนิพนธ์ (เจ้าของ)',  true],
+    ['staff1', 'staff1234', 'STAFF', 'สมชาย (คนงาน)',        true],
+    ['staff2', 'staff1234', 'STAFF', 'สมหญิง (คนงาน)',       true],
+  ]);
+  usersSheet.getRange('A1:E1').setFontWeight('bold').setBackground('#fce5cd');
+  Logger.log('  👤 สร้างผู้ใช้: aod/aod1234 (Admin), staff1/staff1234, staff2/staff1234');
+
+  // ── 3. BOARS ────────────────────────────────────────────────
+  const boarsSheet = createOrClearSheet('BOARS');
+  boarsSheet.getRange(1, 1, 1, 6).setValues([['boar_id', 'ear_tag', 'breed', 'birth_date', 'entry_date', 'is_active']]);
+  boarsSheet.getRange(2, 1, 3, 6).setValues([
+    ['B001', 'P001', 'Duroc',      '2021-01-15', '2022-03-01', true],
+    ['B002', 'P002', 'Duroc',      '2021-06-20', '2022-08-01', true],
+    ['B003', 'P003', 'Hampshire',  '2022-02-10', '2023-01-01', true],
+  ]);
+  boarsSheet.getRange('A1:F1').setFontWeight('bold').setBackground('#d9ead3');
+
+  // ── 4. SOWS ─────────────────────────────────────────────────
+  const sowsSheet = createOrClearSheet('SOWS');
+  const sowHeaders = ['sow_id','ear_tag','breed','birth_date','entry_date','source','status','current_parity','location','notes','created_at','updated_at','is_active'];
+  sowsSheet.getRange(1, 1, 1, sowHeaders.length).setValues([sowHeaders]);
+
+  // สร้างแม่สุกรตัวอย่าง 10 ตัว หลากหลายสถานะ
+  const sampleSows = [
+    ['S001','001','LW×L','2021-03-10','2022-09-01','ฟาร์มพ่อแม่พันธุ์A','PREGNANT',  4,'G-A01','',today,today,true],
+    ['S002','002','LW×L','2021-05-20','2022-11-01','ฟาร์มพ่อแม่พันธุ์A','LACTATING', 2,'F-B03','',today,today,true],
+    ['S003','003','LW×L','2022-01-15','2023-07-01','ฟาร์มพ่อแม่พันธุ์A','OPEN',      1,'G-A05','',today,today,true],
+    ['S004','004','LW×L','2020-08-05','2022-01-01','ฟาร์มพ่อแม่พันธุ์B','SERVED',    6,'G-B12','',today,today,true],
+    ['S005','005','LW×L','2021-11-12','2023-05-01','ฟาร์มพ่อแม่พันธุ์A','PREGNANT',  3,'G-A08','',today,today,true],
+    ['S006','006','LW×L','2022-04-20','2023-10-01','ฟาร์มพ่อแม่พันธุ์B','OPEN',      0,'G-C02','สุกรสาวรอผสม',today,today,true],
+    ['S007','007','LW×L','2020-06-01','2021-12-01','ฟาร์มพ่อแม่พันธุ์A','LACTATING', 7,'F-B08','ใกล้ถึงเกณฑ์คัดทิ้ง',today,today,true],
+    ['S008','008','LW×L','2021-09-15','2023-03-01','ฟาร์มพ่อแม่พันธุ์B','OPEN',      2,'G-D04','',today,today,true],
+    ['S009','009','LW×L','2022-02-28','2023-08-01','ฟาร์มพ่อแม่พันธุ์A','SERVED',    1,'G-A10','',today,today,true],
+    ['S010','010','LW×L','2019-11-01','2021-05-01','ฟาร์มพ่อแม่พันธุ์A','OPEN',      9,'G-E01','ควรคัดทิ้ง',today,today,true],
+  ];
+  sowsSheet.getRange(2, 1, sampleSows.length, sowHeaders.length).setValues(sampleSows);
+  sowsSheet.getRange('A1:M1').setFontWeight('bold').setBackground('#cfe2f3');
+  Logger.log(`  🐷 สร้างแม่สุกรตัวอย่าง ${sampleSows.length} ตัว`);
+
+  // ── 5. CYCLES ───────────────────────────────────────────────
+  const cyclesSheet = createOrClearSheet('CYCLES');
+  const cycleHeaders = [
+    'cycle_id','sow_id','parity','service_date','boar_id','technician','service_type',
+    'expected_farrowing','preg_check1_due','preg_check1_date','preg_check1_result',
+    'preg_check2_due','preg_check2_date','preg_check2_result',
+    'move_farrowing_due','move_farrowing_date',
+    'actual_farrowing_date','gestation_length',
+    'total_born','live_born','stillborn','mummy','birth_weight_total',
+    'fostered_in','fostered_out',
+    'weaning_date','weaned_count','weaning_weight_total','lactation_days',
+    'wsi_date','wsi_days','cycle_status','notes','created_at'
+  ];
+  cyclesSheet.getRange(1, 1, 1, cycleHeaders.length).setValues([cycleHeaders]);
+
+  // วงจรตัวอย่าง: ครอบคลุมทุกสถานะ (COMPLETE, ACTIVE)
+  const sampleCycles = [
+    // S001 ท้องที่ 4 (ACTIVE - กำลังท้อง)
+    ['S001-4','S001',4,'2024-03-01','B001','สมชาย','AI',
+     '2024-06-23','2024-03-22','2024-03-21','POSITIVE',
+     '2024-04-12','2024-04-11','CONFIRMED',
+     '2024-06-19','2024-06-18',
+     '','','','','','','',0,0,'','','','','','','ACTIVE','',today],
+
+    // S002 ท้องที่ 2 (ACTIVE - กำลังเลี้ยงลูก คลอดแล้ว)
+    ['S002-2','S002',2,'2024-01-05','B002','สมหญิง','AI',
+     '2024-04-29','2024-01-26','2024-01-25','POSITIVE',
+     '2024-02-16','2024-02-15','CONFIRMED',
+     '2024-04-25','2024-04-24',
+     '2024-04-28',113,13,12,1,0,16.2,0,0,'','','','','','','ACTIVE','คลอดปกติ',today],
+
+    // S004 ท้องที่ 6 (ACTIVE - ผสมใหม่)
+    ['S004-6','S004',6,'2024-05-10','B003','สมชาย','AI',
+     '2024-09-01','2024-05-31','','',
+     '2024-06-21','','',
+     '2024-08-28','',
+     '','','','','','','',0,0,'','','','','','','ACTIVE','',today],
+
+    // S009 ท้องที่ 1 (ACTIVE - ผสมใหม่)
+    ['S009-1','S009',1,'2024-05-20','B001','สมชาย','AI',
+     '2024-09-11','2024-06-10','','',
+     '2024-07-01','','',
+     '2024-09-07','',
+     '','','','','','','',0,0,'','','','','','','ACTIVE','สุกรสาวท้องแรก',today],
+
+    // S001 ท้องที่ 3 (COMPLETE)
+    ['S001-3','S001',3,'2023-09-01','B001','สมชาย','AI',
+     '2023-12-24','2023-09-22','2023-09-21','POSITIVE',
+     '2023-10-13','2023-10-12','CONFIRMED',
+     '2023-12-20','2023-12-19',
+     '2023-12-22',112,14,13,1,0,17.5,0,0,
+     '2024-01-13',12,84,22,'2024-01-18',5,'COMPLETE','',today],
+
+    // S001 ท้องที่ 2 (COMPLETE)
+    ['S001-2','S001',2,'2023-03-15','B002','สมหญิง','AI',
+     '2023-07-07','2023-04-05','2023-04-04','POSITIVE',
+     '2023-04-26','2023-04-25','CONFIRMED',
+     '2023-07-03','2023-07-02',
+     '2023-07-05',112,13,12,1,0,15.8,0,0,
+     '2023-07-27',11,77,22,'2023-08-01',5,'COMPLETE','',today],
+
+    // S007 ท้องที่ 7 (COMPLETE — เข้าเกณฑ์คัดทิ้ง)
+    ['S007-7','S007',7,'2024-02-01','B001','สมชาย','AI',
+     '2024-05-26','2024-02-22','2024-02-21','POSITIVE',
+     '2024-03-14','2024-03-13','CONFIRMED',
+     '2024-05-22','2024-05-20',
+     '2024-05-24',113,11,9,2,0,11.3,0,0,
+     '2024-06-14',8,48,21,'2024-06-19',5,'COMPLETE','ผลผลิตลดลง',today],
+
+    // S010 ท้องที่ 9 (COMPLETE — เกินเกณฑ์คัดทิ้ง)
+    ['S010-9','S010',9,'2023-12-01','B002','สมหญิง','AI',
+     '2024-03-25','2023-12-22','2023-12-21','POSITIVE',
+     '2024-01-12','2024-01-11','CONFIRMED',
+     '2024-03-21','2024-03-20',
+     '2024-03-22',112,10,8,2,0,10.1,0,0,
+     '2024-04-12',7,42,21,'2024-04-17',5,'COMPLETE','ท้องที่ 9 ผลผลิตต่ำมาก',today],
+  ];
+  cyclesSheet.getRange(2, 1, sampleCycles.length, cycleHeaders.length).setValues(sampleCycles);
+  cyclesSheet.getRange('A1:AH1').setFontWeight('bold').setBackground('#fff2cc');
+  Logger.log(`  🔄 สร้างวงจรตัวอย่าง ${sampleCycles.length} รายการ`);
+
+  // ── 6. EVENTS ───────────────────────────────────────────────
+  const eventsSheet = createOrClearSheet('EVENTS');
+  eventsSheet.getRange(1, 1, 1, 7).setValues([['event_id','sow_id','event_date','event_type','details','recorded_by','notes']]);
+  eventsSheet.getRange(2, 1, 3, 7).setValues([
+    ['EVT-001','S001', today, 'VACCINE',   'วัคซีน PRRS + PCV2',     'สมชาย', ''],
+    ['EVT-002','S007', today, 'BCS',       'BCS 2.5 — ต่ำกว่าเกณฑ์', 'สมหญิง','ควรพิจารณาคัดทิ้ง'],
+    ['EVT-003','S010', today, 'TREATMENT', 'รักษาขาเจ็บ',            'สมชาย', ''],
+  ]);
+  eventsSheet.getRange('A1:G1').setFontWeight('bold').setBackground('#ead1dc');
+
+  // ── ปรับ column width อัตโนมัติทุก Sheet ──────────────────
+  [settingsSheet, usersSheet, boarsSheet, sowsSheet, cyclesSheet, eventsSheet].forEach(s => {
+    try { s.autoResizeColumns(1, s.getLastColumn()); } catch(e) {}
+  });
+
+  // ── ลบ Sheet1 default ถ้ายังมีอยู่ ───────────────────────
+  const defaultSheet = ss.getSheetByName('Sheet1') || ss.getSheetByName('แผ่น1');
+  if (defaultSheet && ss.getSheets().length > 1) {
+    ss.deleteSheet(defaultSheet);
+    Logger.log('  🗑️  ลบ Sheet1 (default) แล้ว');
+  }
+
+  Logger.log('');
+  Logger.log('════════════════════════════════════════');
+  Logger.log('✅ initSheets เสร็จสมบูรณ์!');
+  Logger.log('');
+  Logger.log('👤 Login ได้ทันที:');
+  Logger.log('   Admin : aod / aod1234');
+  Logger.log('   Staff : staff1 / staff1234');
+  Logger.log('');
+  Logger.log('📌 ขั้นตอนถัดไป:');
+  Logger.log('   1. Deploy > New deployment > Web App');
+  Logger.log('   2. Execute as: Me | Access: Anyone');
+  Logger.log('   3. Copy Web App URL ไปใส่ใน API_URL ของ index.html');
+  Logger.log('════════════════════════════════════════');
+
+  // แสดง popup สรุปผล
+  ui.alert(
+    '✅ initSheets สำเร็จ!',
+    'สร้างฐานข้อมูลเรียบร้อยแล้ว\n\n' +
+    '📋 Sheet ที่สร้าง: SETTINGS, USERS, BOARS, SOWS, CYCLES, EVENTS\n' +
+    '🐷 แม่สุกรตัวอย่าง: 10 ตัว (หลากหลายสถานะ)\n' +
+    '🔄 วงจรตัวอย่าง: 8 รายการ\n\n' +
+    '👤 Login:\n' +
+    '   Admin : aod / aod1234\n' +
+    '   Staff : staff1 / staff1234\n\n' +
+    '📌 ถัดไป: Deploy > New deployment > Web App\n' +
+    '   Execute as: Me | Access: Anyone',
+    ui.ButtonSet.OK
+  );
 }
