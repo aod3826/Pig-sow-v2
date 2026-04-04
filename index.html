@@ -648,7 +648,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 // ══════════════════════════════════════════════════════════
 // CONFIG — แก้ไข URL นี้หลังจาก Deploy Google Apps Script
 // ══════════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbxojGj0LzZFLFFnUAO0A2wHYjaM1GewPPWhwKJ2eutwm3G4pM0tJwlMI8fk0-jJKgmrpQ/exec';
+const API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
 
 // ══════════════════════════════════════════════════════════
 // STATE
@@ -1339,4 +1339,33 @@ async function saveSettings() {
   } else showToast(res.error, 'error');
 }
 
-// ══════════════
+// ══════════════════════════════════════════════════════════
+// PAGE-SPECIFIC INIT
+// ══════════════════════════════════════════════════════════
+const origShowPage = showPage;
+window.showPage = function(name) {
+  origShowPage(name);
+  if (name === 'settings') loadSettings();
+  if (name === 'sows') { if (appState.sows.length === 0) loadSows(); }
+};
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('active'); });
+});
+
+// Set today's date defaults
+window.addEventListener('load', () => {
+  const today = new Date().toISOString().split('T')[0];
+  ['svc-date','pc-date','far-date','wean-date'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = today;
+  });
+  const monthEl = document.getElementById('report-month');
+  if (monthEl) monthEl.value = today.substring(0, 7);
+});
+
+// Login: กดเลือกผู้ใช้บนหน้า Login ได้เลย ไม่ต้องกรอก
+</script>
+</body>
+</html>
