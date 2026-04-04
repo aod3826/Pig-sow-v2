@@ -234,7 +234,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div id="login-error" class="login-error"></div>
     <div class="form-group">
       <label>ชื่อผู้ใช้</label>
-      <input type="text" id="login-username" placeholder="admin / staff1" autocomplete="username">
+      <input type="text" id="login-username" placeholder="aod / staff1" autocomplete="username">
     </div>
     <div class="form-group">
       <label>รหัสผ่าน</label>
@@ -661,7 +661,7 @@ async function api(action, data = {}) {
 
 // Demo mode (ใช้เมื่อยังไม่ได้ตั้ง API_URL)
 function isDemoMode() {
-  return API_URL.includes('YOUR_SCRIPT_ID');
+  return API_URL.includes('https://script.google.com/macros/s/AKfycbyeZqBsoQdGraWwI3qQKLHPc-tBGBVBYIYqaI59MeJLdXbjUPygRJndh5QS0_hiO7q7cw/exec');
 }
 
 async function apiSafe(action, data = {}) {
@@ -686,7 +686,15 @@ function getDemoData(action) {
     {sow_id:'S005',ear_tag:'005',breed:'LW×L',status:'PREGNANT',current_parity:3,location:'G-A08'},
     {sow_id:'S006',ear_tag:'006',breed:'LW×L',status:'OPEN',current_parity:1,location:'G-C02'},
   ];
-  if (action === 'login') return {success:true,user:{username:'admin',role:'ADMIN',display_name:'คุณนิพนธ์ (Demo)'}};
+  if (action === 'login') {
+    const u = data.username, p = data.password;
+    if ((u==='aod'&&p==='aod1234')||(u==='staff1'&&p==='staff1234')||(u==='staff2'&&p==='staff1234')) {
+      const roles = {aod:'ADMIN',staff1:'STAFF',staff2:'STAFF'};
+      const names = {aod:'คุณนิพนธ์ (Demo)',staff1:'สมชาย (Demo)',staff2:'สมหญิง (Demo)'};
+      return {success:true,user:{username:u,role:roles[u],display_name:names[u]}};
+    }
+    return {success:false,error:'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'};
+  }
   if (action === 'getDashboard') return {
     success:true,
     statusCounts:{OPEN:62,SERVED:45,PREGNANT:68,LACTATING:25},
@@ -845,7 +853,7 @@ document.getElementById('btn-login').addEventListener('click', async () => {
     appState.user = res.user;
     document.getElementById('header-user').textContent = res.user.display_name;
     showScreen('screen-app');
-    if (isDemoMode()) showToast('🎮 Demo Mode — ข้อมูลตัวอย่าง (ยังไม่ได้เชื่อม API)', 'warning', 6000);
+    if (isDemoMode()) showToast('🎮 Demo Mode — ใช้ข้อมูลตัวอย่าง ยังไม่เชื่อม Google Sheets', 'warning', 5000);
     initApp();
   } else {
     errEl.textContent = res.error || 'เข้าสู่ระบบไม่สำเร็จ';
@@ -1347,11 +1355,9 @@ window.addEventListener('load', () => {
   if (monthEl) monthEl.value = today.substring(0, 7);
 });
 
-// Demo quick login
-if (window.location.href.includes('localhost') || window.location.href.includes('github.io')) {
-  document.getElementById('login-username').value = 'admin';
-  document.getElementById('login-password').value = 'admin1234';
-}
+// Pre-fill login ตลอดเวลา (ง่ายต่อการทดสอบ — ลบออกเมื่อ production)
+document.getElementById('login-username').value = 'aod';
+document.getElementById('login-password').value = 'aod1234';
 </script>
 </body>
 </html>
