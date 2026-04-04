@@ -55,6 +55,14 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .btn-sm{padding:.45rem .85rem;font-size:.875rem}
 .btn-icon{width:40px;height:40px;padding:0;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--border);font-size:1.1rem}
 .login-error{background:var(--red-50);color:var(--red-600);border:1px solid var(--red-100);border-radius:var(--radius-sm);padding:.625rem 1rem;font-size:.875rem;margin-bottom:1rem;display:none}
+.login-user-btn{width:100%;display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;background:var(--surface);border:1.5px solid var(--border-light);border-radius:var(--radius);margin-bottom:.625rem;cursor:pointer;transition:all .15s;text-align:left;font-family:'Sarabun',sans-serif}
+.login-user-btn:hover{background:var(--green-50);border-color:var(--green-400);transform:translateX(3px)}
+.login-user-btn:active{transform:scale(.98)}
+.login-user-icon{font-size:1.75rem;flex-shrink:0}
+.login-user-info{flex:1}
+.login-user-name{font-size:1rem;font-weight:700;color:var(--green-800)}
+.login-user-role{font-size:.78rem;color:var(--text-muted);margin-top:.1rem}
+.login-user-arrow{font-size:1.5rem;color:var(--green-400);font-weight:300}
 
 /* ── APP LAYOUT ── */
 #screen-app{background:var(--bg)}
@@ -229,22 +237,35 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div class="login-logo">
       <span class="pig-icon">🐷</span>
       <h1>นิพนธ์ฟาร์ม</h1>
-      <p>Smart Sow Productivity System</p>
+      <p>Smart Sow Productivity System v1.0</p>
     </div>
-    <div id="login-error" class="login-error"></div>
-    <div class="form-group">
-      <label>ชื่อผู้ใช้</label>
-      <input type="text" id="login-username" placeholder="aod / staff1" autocomplete="username">
-    </div>
-    <div class="form-group">
-      <label>รหัสผ่าน</label>
-      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="btn btn-primary" id="btn-login">
-      <span id="login-btn-text">เข้าสู่ระบบ</span>
+    <p style="font-size:.8rem;font-weight:600;color:var(--text-muted);margin-bottom:.625rem;text-transform:uppercase;letter-spacing:.4px">เลือกผู้ใช้งาน</p>
+    <button class="login-user-btn" onclick="localLogin('aod','aod1234','ADMIN','คุณนิพนธ์')">
+      <span class="login-user-icon">👑</span>
+      <div class="login-user-info">
+        <div class="login-user-name">คุณนิพนธ์</div>
+        <div class="login-user-role">เจ้าของฟาร์ม (Admin)</div>
+      </div>
+      <span class="login-user-arrow">›</span>
     </button>
-    <p style="font-size:.75rem;color:var(--text-hint);text-align:center;margin-top:1rem">
-      v1.0 — PigCHAMP Standard
+    <button class="login-user-btn" onclick="localLogin('staff1','staff1234','STAFF','สมชาย')">
+      <span class="login-user-icon">👷</span>
+      <div class="login-user-info">
+        <div class="login-user-name">สมชาย</div>
+        <div class="login-user-role">พนักงาน (Staff)</div>
+      </div>
+      <span class="login-user-arrow">›</span>
+    </button>
+    <button class="login-user-btn" onclick="localLogin('staff2','staff1234','STAFF','สมหญิง')">
+      <span class="login-user-icon">👷</span>
+      <div class="login-user-info">
+        <div class="login-user-name">สมหญิง</div>
+        <div class="login-user-role">พนักงาน (Staff)</div>
+      </div>
+      <span class="login-user-arrow">›</span>
+    </button>
+    <p style="font-size:.72rem;color:var(--text-hint);text-align:center;margin-top:1.25rem">
+      v1 Demo Mode — ข้อมูลตัวอย่าง
     </p>
   </div>
 </div>
@@ -661,7 +682,7 @@ async function api(action, data = {}) {
 
 // Demo mode (ใช้เมื่อยังไม่ได้ตั้ง API_URL)
 function isDemoMode() {
-  return API_URL.includes('https://script.google.com/macros/s/AKfycbyeZqBsoQdGraWwI3qQKLHPc-tBGBVBYIYqaI59MeJLdXbjUPygRJndh5QS0_hiO7q7cw/exec');
+  return API_URL.includes('YOUR_SCRIPT_ID');
 }
 
 async function apiSafe(action, data = {}) {
@@ -688,10 +709,10 @@ function getDemoData(action) {
   ];
   if (action === 'login') {
     const u = data.username, p = data.password;
-    if ((u==='aod'&&p==='aod1234')||(u==='staff1'&&p==='staff1234')||(u==='staff2'&&p==='staff1234')) {
-      const roles = {aod:'ADMIN',staff1:'STAFF',staff2:'STAFF'};
-      const names = {aod:'คุณนิพนธ์ (Demo)',staff1:'สมชาย (Demo)',staff2:'สมหญิง (Demo)'};
-      return {success:true,user:{username:u,role:roles[u],display_name:names[u]}};
+    // login จัดการใน localLogin() แล้ว — ไม่ผ่าน getDemoData
+    const u2 = LOCAL_USERS[data.username];
+    if (u2 && u2.password === data.password) {
+      return {success:true,user:{username:data.username,role:u2.role,display_name:u2.display_name}};
     }
     return {success:false,error:'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'};
   }
@@ -838,38 +859,27 @@ function addDaysToDate(dateStr, days) {
 // ══════════════════════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════════════════════
-document.getElementById('btn-login').addEventListener('click', async () => {
-  const u = document.getElementById('login-username').value.trim();
-  const p = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
-  errEl.style.display = 'none';
-  if (!u || !p) { errEl.textContent = 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน'; errEl.style.display = 'block'; return; }
+// ── LOCAL LOGIN — ไม่ต้องเชื่อม API ────────────────────────
+// ตรวจสอบ username/password ใน JavaScript โดยตรง
+// เมื่อ Deploy Google Sheets แล้ว เปลี่ยน localLogin ให้ call apiSafe('login') แทน
+const LOCAL_USERS = {
+  'aod':    { password: 'aod1234',   role: 'ADMIN', display_name: 'คุณนิพนธ์' },
+  'staff1': { password: 'staff1234', role: 'STAFF', display_name: 'สมชาย' },
+  'staff2': { password: 'staff1234', role: 'STAFF', display_name: 'สมหญิง' },
+};
 
-  document.getElementById('login-btn-text').innerHTML = '<span class="loader"></span>';
-  const res = await apiSafe('login', {username: u, password: p});
-  document.getElementById('login-btn-text').textContent = 'เข้าสู่ระบบ';
-
-  if (res.success) {
-    appState.user = res.user;
-    document.getElementById('header-user').textContent = res.user.display_name;
-    showScreen('screen-app');
-    if (isDemoMode()) showToast('🎮 Demo Mode — ใช้ข้อมูลตัวอย่าง ยังไม่เชื่อม Google Sheets', 'warning', 5000);
-    initApp();
-  } else {
-    errEl.textContent = res.error || 'เข้าสู่ระบบไม่สำเร็จ';
-    errEl.style.display = 'block';
-  }
-});
-
-document.getElementById('login-password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('btn-login').click();
-});
+function localLogin(username, password, role, displayName) {
+  appState.user = { username, role, display_name: displayName };
+  document.getElementById('header-user').textContent = displayName;
+  showScreen('screen-app');
+  if (isDemoMode()) showToast('🎮 Demo Mode — กรุณา Deploy Google Sheets เพื่อบันทึกข้อมูลจริง', 'warning', 5000);
+  initApp();
+}
 
 function confirmLogout() {
   if (confirm('ออกจากระบบ?')) {
     appState.user = null;
     showScreen('screen-login');
-    document.getElementById('login-password').value = '';
   }
 }
 
@@ -1355,9 +1365,7 @@ window.addEventListener('load', () => {
   if (monthEl) monthEl.value = today.substring(0, 7);
 });
 
-// Pre-fill login ตลอดเวลา (ง่ายต่อการทดสอบ — ลบออกเมื่อ production)
-document.getElementById('login-username').value = 'aod';
-document.getElementById('login-password').value = 'aod1234';
+// Login: กดเลือกผู้ใช้บนหน้า Login ได้เลย ไม่ต้องกรอก
 </script>
 </body>
 </html>
