@@ -1,4 +1,4 @@
-//# นิพนธ์ฟาร์ม — Google Sheets Database Schema
+# นิพนธ์ฟาร์ม — Google Sheets Database Schema
 ## Smart Sow Productivity System (PigCHAMP Standard)
 
 ---
