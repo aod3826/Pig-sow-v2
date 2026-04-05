@@ -201,7 +201,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   #screen-app{max-width:480px;margin:0 auto;box-shadow:0 0 40px rgba(0,0,0,.15)}
 }
 
-/* ── SOW PICKER ── */
+/* ── SOW PICKER BUTTON ── */
 .sow-pick-btn{width:100%;display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:#FAFAF7;border:1.5px solid var(--border);border-radius:var(--rads);cursor:pointer;text-align:left;font-family:'Sarabun',sans-serif;font-size:.95rem;transition:all .15s;color:var(--muted)}
 .sow-pick-btn:hover,.sow-pick-btn:active{background:var(--g0);border-color:var(--g4)}
 .sow-pick-btn.sel{background:var(--g0);border-color:var(--g6)}
@@ -209,6 +209,7 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .spb-ico{font-size:1.2rem;flex-shrink:0;line-height:1}
 .spb-lbl{flex:1}
 .spb-arr{font-size:1.3rem;line-height:1;flex-shrink:0}
+/* ── PICKER LIST ── */
 .pi{display:flex;align-items:center;gap:.875rem;padding:.875rem 0;border-bottom:1px solid var(--bl);cursor:pointer;transition:background .1s}
 .pi:last-child{border-bottom:none}
 .pi:active{background:var(--g0);margin:0 -1.5rem;padding-left:1.5rem;padding-right:1.5rem}
@@ -218,6 +219,19 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .pi-cyc{font-size:.74rem;font-family:'IBM Plex Mono',monospace;color:var(--g7);background:var(--g0);padding:2px 8px;border-radius:10px;flex-shrink:0;white-space:nowrap}
 .picker-empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
 .picker-empty .pe-ico{font-size:2.5rem;display:block;margin-bottom:.5rem}
+/* ── TASK ACTION BUTTON ── */
+.titem{cursor:pointer}
+.tact{display:inline-flex;align-items:center;gap:.35rem;margin-top:.5rem;background:var(--g7);color:#fff;border:none;border-radius:var(--rads);padding:.35rem .85rem;font-size:.78rem;font-weight:600;font-family:'Sarabun',sans-serif;cursor:pointer;transition:background .15s}
+.titem.urg .tact{background:var(--r6)}
+.tact:hover{opacity:.88}
+/* ── NEXT STEP BANNER ── */
+.next-step{display:flex;align-items:center;gap:.625rem;background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--rads);padding:.75rem 1rem;margin-bottom:.875rem}
+.ns-ico{font-size:1.4rem;flex-shrink:0}
+.ns-body{flex:1;min-width:0}
+.ns-label{font-size:.82rem;color:var(--muted)}
+.ns-action{font-size:.95rem;font-weight:700;color:var(--g7)}
+.ns-date{font-size:.8rem;color:var(--a6);margin-top:.1rem}
+.ns-btn{background:var(--g7);color:#fff;border:none;border-radius:var(--rads);padding:.45rem .9rem;font-size:.82rem;font-weight:600;font-family:'Sarabun',sans-serif;cursor:pointer;flex-shrink:0;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -469,14 +483,14 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 
 <!-- MODAL: SOW PICKER -->
 <div class="overlay" id="m-sowpicker">
-  <div class="sheet" style="max-height:82vh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)">
+  <div class="sheet" style="max-height:82vh;display:flex;flex-direction:column">
     <div class="handle"></div>
     <div class="mtitle" id="picker-title">🐷 เลือกแม่สุกร</div>
-    <div style="margin-bottom:.875rem">
+    <div style="margin-bottom:.625rem">
       <input type="search" id="picker-q" placeholder="🔍 ค้นหาเบอร์หู หรือ รหัส…" oninput="renderPickerList()"
         style="width:100%;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:.95rem;background:#FAFAF7;outline:none">
     </div>
-    <div id="picker-hint" style="font-size:.8rem;color:var(--muted);margin-bottom:.625rem;padding:0 .125rem"></div>
+    <div id="picker-hint" style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;padding:0 .1rem"></div>
     <div id="picker-list" style="overflow-y:auto;flex:1;margin:0 -1.5rem;padding:0 1.5rem"></div>
   </div>
 </div>
@@ -718,6 +732,15 @@ async function loadDashboard() {
   if(tr.success) renderTasks(tr.tasks);
 }
 
+// map task type → form tab + sow status ที่ต้อง prefill
+const TASK_FORM = {
+  PREG_CHECK_1: { form:'preg',   label:'บันทึกตรวจท้อง' },
+  PREG_CHECK_2: { form:'preg',   label:'บันทึกตรวจท้อง' },
+  MOVE_FARROWING:{ form:'farrow', label:'บันทึกย้ายเล้าคลอด' },
+  NEAR_FARROWING:{ form:'farrow', label:'บันทึกคลอด' },
+  WEANING_DUE:  { form:'wean',   label:'บันทึกหย่านม' },
+};
+
 function renderTasks(tasks) {
   const w = document.getElementById('tasks-wrap');
   const b = document.getElementById('task-badge');
@@ -733,15 +756,71 @@ function renderTasks(tasks) {
   else if(nb) nb.remove();
 
   const ico = {PREG_CHECK_1:'🩺',PREG_CHECK_2:'🔬',MOVE_FARROWING:'🏠',NEAR_FARROWING:'🐣',WEANING_DUE:'🍼'};
-  w.innerHTML = tasks.map(t=>`
-    <div class="titem ${t.priority==='URGENT'?'urg':''}" onclick="showDetail('${t.sow_id}')">
+  // store tasks for quickRecord
+  w._tasks = tasks;
+  w.innerHTML = tasks.map((t,i)=>{
+    const tf = TASK_FORM[t.type];
+    const actBtn = tf ? `<button class="tact" onclick="event.stopPropagation();quickRecord(${i})">✏️ ${tf.label} →</button>` : '';
+    return `<div class="titem ${t.priority==='URGENT'?'urg':''}" onclick="showDetail('${t.sow_id}')">
       <span style="font-size:1.5rem;flex-shrink:0">${ico[t.type]||'📋'}</span>
       <div style="flex:1">
         <div class="tlabel">${t.label}</div>
         <div class="tdue">กำหนด ${fmtDate(t.due_date)}</div>
-        <span class="tbdg ${t.priority==='URGENT'?'bdg-u':'bdg-n'}">${t.priority==='URGENT'?'🔴 ด่วน!':'🟡 เร็วๆ นี้'}</span>
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.25rem">
+          <span class="tbdg ${t.priority==='URGENT'?'bdg-u':'bdg-n'}">${t.priority==='URGENT'?'🔴 ด่วน!':'🟡 เร็วๆ นี้'}</span>
+          ${actBtn}
+        </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+  // re-attach task data to rendered items
+  w._tasks = tasks;
+}
+
+// กดปุ่มจาก task → ไปหน้าบันทึก และ prefill แม่สุกรตัวนั้นเลย
+function quickRecord(idx) {
+  const w = document.getElementById('tasks-wrap');
+  const t = (w._tasks||[])[idx];
+  if(!t) return;
+  const tf = TASK_FORM[t.type];
+  if(!tf) return;
+  // หา sow จาก cache
+  const sow = ST.sows.find(s=>s.sow_id===t.sow_id);
+  // ไปหน้าบันทึก เปิด form ที่ถูก
+  go('record');
+  // เปิด tab ที่ถูก
+  const tabs = document.querySelectorAll('#rec-tabs .ftab');
+  const formNames = ['service','preg','farrow','wean'];
+  tabs.forEach((tab,i)=>{
+    const active = formNames[i]===tf.form;
+    tab.classList.toggle('active',active);
+  });
+  ['service','preg','farrow','wean'].forEach(f=>{
+    document.getElementById('f-'+f).style.display = f===tf.form?'block':'none';
+  });
+  // prefill วันที่เป็นวันนี้
+  const today = new Date().toISOString().split('T')[0];
+  if(tf.form==='preg')    { document.getElementById('pc-date').value=today; }
+  if(tf.form==='farrow')  { document.getElementById('fr-date').value=today; }
+  if(tf.form==='wean')    { document.getElementById('wn-date').value=today; }
+  // prefill แม่สุกร — เหมือนกับกด picker แล้วเลือก
+  if(sow) {
+    const cycId = sow.sow_id+'-'+(sow.current_parity||0);
+    if(tf.form==='preg') {
+      document.getElementById('pc-cyc').value=cycId;
+      document.getElementById('pc-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ผสมแล้ว`;
+      document.getElementById('pc-cyc-btn').classList.add('sel');
+    } else if(tf.form==='farrow') {
+      document.getElementById('fr-cyc').value=cycId;
+      document.getElementById('fr-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ท้องอยู่`;
+      document.getElementById('fr-cyc-btn').classList.add('sel');
+    } else if(tf.form==='wean') {
+      document.getElementById('wn-cyc').value=cycId;
+      document.getElementById('wn-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · เลี้ยงลูก`;
+      document.getElementById('wn-cyc-btn').classList.add('sel');
+    }
+  }
+  window.scrollTo(0,0);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -796,6 +875,34 @@ async function showDetail(sowId) {
       <span style="color:var(--g7)">${c.live_born||'—'} ตัว</span>
       <span>${c.weaned_count||'—'} หย่านม</span>
     </div>`).join('');
+  // คำนวณ next-step banner
+  const cycId = s.sow_id+'-'+(s.current_parity||0);
+  const NS = {
+    OPEN:      { ico:'🔬', label:'ขั้นตอนถัดไป', action:'บันทึกการผสมพันธุ์', form:'service', date:null },
+    SERVED:    { ico:'🩺', label:'รอตรวจท้อง', action:'บันทึกผลตรวจท้อง', form:'preg', date:null },
+    PREGNANT:  { ico:'🐣', label:'รอคลอด', action:'บันทึกการคลอด', form:'farrow', date:null },
+    LACTATING: { ico:'🍼', label:'รอหย่านม', action:'บันทึกการหย่านม', form:'wean', date:null },
+    CULLED:    null
+  };
+  // ดึงวันที่สำคัญจาก cycle ล่าสุด
+  const latestCyc = (cc||[])[0];
+  if(latestCyc && NS[s.status]) {
+    if(s.status==='SERVED')   NS.SERVED.date   = latestCyc.preg_check1_due;
+    if(s.status==='PREGNANT') NS.PREGNANT.date = latestCyc.expected_farrowing;
+    if(s.status==='LACTATING') NS.LACTATING.date = latestCyc.actual_farrowing_date;
+  }
+  const ns = NS[s.status];
+  const nsBanner = ns ? `
+    <div class="next-step">
+      <span class="ns-ico">${ns.ico}</span>
+      <div class="ns-body">
+        <div class="ns-label">${ns.label}</div>
+        <div class="ns-action">${ns.action}</div>
+        ${ns.date ? `<div class="ns-date">📅 ${fmtDate(ns.date)}</div>` : ''}
+      </div>
+      <button class="ns-btn" onclick="goRecordFor('${s.sow_id}','${ns.form}')">บันทึก →</button>
+    </div>` : '';
+
   document.getElementById('detail-wrap').innerHTML = `
     <div class="card">
       <div class="dhead"><h3>เบอร์หู ${s.ear_tag} · ${s.sow_id}</h3><p>${s.breed||'—'} · ${statusLabel(s.status)} · คอก ${s.location||'—'}</p></div>
@@ -805,6 +912,7 @@ async function showDetail(sowId) {
         <div><div class="ilabel">วันเกิด</div><div class="ival">${fmtDate(s.birth_date)}</div></div>
         <div><div class="ilabel">วันเข้าฟาร์ม</div><div class="ival">${fmtDate(s.entry_date)}</div></div>
       </div>
+      ${nsBanner}
       ${cullHtml}
       <div class="ctitle" style="margin-bottom:.625rem">📋 ประวัติการผลิต</div>
       <div class="crow ch"><span>ท้อง</span><span>วันคลอด</span><span>มีชีวิต</span><span>หย่านม</span></div>
@@ -812,6 +920,45 @@ async function showDetail(sowId) {
     </div>`;
   go('sow-detail');
 }
+
+// จากหน้าประวัติแม่สุกร → กดบันทึก → ไปหน้าบันทึกพร้อม prefill
+function goRecordFor(sowId, formType) {
+  const sow = ST.sows.find(s=>s.sow_id===sowId);
+  go('record');
+  const formNames = ['service','preg','farrow','wean'];
+  document.querySelectorAll('#rec-tabs .ftab').forEach((tab,i)=>{
+    tab.classList.toggle('active', formNames[i]===formType);
+  });
+  ['service','preg','farrow','wean'].forEach(f=>{
+    document.getElementById('f-'+f).style.display = f===formType?'block':'none';
+  });
+  const today = new Date().toISOString().split('T')[0];
+  if(formType==='preg')   document.getElementById('pc-date').value=today;
+  if(formType==='farrow') document.getElementById('fr-date').value=today;
+  if(formType==='wean')   document.getElementById('wn-date').value=today;
+  if(sow) {
+    const cycId = sow.sow_id+'-'+(sow.current_parity||0);
+    if(formType==='service') {
+      document.getElementById('sv-sow').value=sow.sow_id;
+      document.getElementById('sv-sow-lbl').textContent=`เบอร์ ${sow.ear_tag} (${sow.sow_id}) · ${statusLabel(sow.status)}`;
+      document.getElementById('sv-sow-btn').classList.add('sel');
+    } else if(formType==='preg') {
+      document.getElementById('pc-cyc').value=cycId;
+      document.getElementById('pc-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ผสมแล้ว`;
+      document.getElementById('pc-cyc-btn').classList.add('sel');
+    } else if(formType==='farrow') {
+      document.getElementById('fr-cyc').value=cycId;
+      document.getElementById('fr-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ท้องอยู่`;
+      document.getElementById('fr-cyc-btn').classList.add('sel');
+    } else if(formType==='wean') {
+      document.getElementById('wn-cyc').value=cycId;
+      document.getElementById('wn-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · เลี้ยงลูก`;
+      document.getElementById('wn-cyc-btn').classList.add('sel');
+    }
+  }
+  window.scrollTo(0,0);
+}
+
 function openCull(id, label) {
   ST.cullSowId = id;
   document.getElementById('cull-label').textContent = label;
@@ -848,7 +995,7 @@ async function loadBoars() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// SOW PICKER — เลือกแม่สุกรจากรายการ แทนการพิมพ์ ID
+// SOW PICKER
 // ══════════════════════════════════════════════════════════════
 let _pickerForm = null;
 let _pickerList = [];
@@ -856,35 +1003,31 @@ let _pickerList = [];
 const PICKER_CFG = {
   service: {
     title: '🔬 เลือกแม่สุกร — ผสมพันธุ์',
-    hint: 'แสดงเฉพาะแม่สุกรสถานะ: ว่าง หรือ ผสมแล้ว',
-    statuses: ['OPEN', 'SERVED'],
-    useCycleId: false,
-    btnId: 'sv-sow-btn', lblId: 'sv-sow-lbl', hidId: 'sv-sow',
-    makeLbl: s => `เบอร์ ${s.ear_tag} (${s.sow_id}) · ${statusLabel(s.status)}`
+    hint: 'แสดงเฉพาะแม่สุกรที่ว่าง หรือ ผสมแล้ว',
+    statuses: ['OPEN','SERVED'], useCycleId: false,
+    btnId:'sv-sow-btn', lblId:'sv-sow-lbl', hidId:'sv-sow',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} (${s.sow_id}) · ${statusLabel(s.status)}`
   },
   preg: {
     title: '🩺 เลือกแม่สุกร — ตรวจท้อง',
     hint: 'แสดงเฉพาะแม่สุกรที่ผสมแล้ว รอตรวจท้อง',
-    statuses: ['SERVED'],
-    useCycleId: true,
-    btnId: 'pc-cyc-btn', lblId: 'pc-cyc-lbl', hidId: 'pc-cyc',
-    makeLbl: s => `เบอร์ ${s.ear_tag} · ${s._cycId} · ผสมแล้ว`
+    statuses: ['SERVED'], useCycleId: true,
+    btnId:'pc-cyc-btn', lblId:'pc-cyc-lbl', hidId:'pc-cyc',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} · ${s._cycId} · ผสมแล้ว`
   },
   farrow: {
     title: '🐣 เลือกแม่สุกร — บันทึกคลอด',
     hint: 'แสดงเฉพาะแม่สุกรที่ท้องอยู่ รอคลอด',
-    statuses: ['PREGNANT'],
-    useCycleId: true,
-    btnId: 'fr-cyc-btn', lblId: 'fr-cyc-lbl', hidId: 'fr-cyc',
-    makeLbl: s => `เบอร์ ${s.ear_tag} · ${s._cycId} · ท้องอยู่`
+    statuses: ['PREGNANT'], useCycleId: true,
+    btnId:'fr-cyc-btn', lblId:'fr-cyc-lbl', hidId:'fr-cyc',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} · ${s._cycId} · ท้องอยู่`
   },
   wean: {
     title: '🍼 เลือกแม่สุกร — บันทึกหย่านม',
     hint: 'แสดงเฉพาะแม่สุกรที่กำลังเลี้ยงลูก',
-    statuses: ['LACTATING'],
-    useCycleId: true,
-    btnId: 'wn-cyc-btn', lblId: 'wn-cyc-lbl', hidId: 'wn-cyc',
-    makeLbl: s => `เบอร์ ${s.ear_tag} · ${s._cycId} · เลี้ยงลูก`
+    statuses: ['LACTATING'], useCycleId: true,
+    btnId:'wn-cyc-btn', lblId:'wn-cyc-lbl', hidId:'wn-cyc',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} · ${s._cycId} · เลี้ยงลูก`
   }
 };
 
@@ -894,12 +1037,10 @@ function openPicker(formType) {
   document.getElementById('picker-title').textContent = cfg.title;
   document.getElementById('picker-hint').textContent = cfg.hint;
   document.getElementById('picker-q').value = '';
-  if (ST.sows.length === 0) {
-    document.getElementById('picker-list').innerHTML = '<div class="picker-empty"><span class="pe-ico">⏳</span>กำลังโหลด…</div>';
+  if(ST.sows.length===0) {
+    document.getElementById('picker-list').innerHTML='<div class="picker-empty"><span class="pe-ico">⏳</span>กำลังโหลด…</div>';
     openModal('m-sowpicker');
-    api('getSows').then(r => {
-      if (r.success) { ST.sows = r.sows; renderPickerList(); }
-    });
+    api('getSows').then(r=>{ if(r.success){ST.sows=r.sows; renderPickerList();} });
   } else {
     renderPickerList();
     openModal('m-sowpicker');
@@ -907,50 +1048,45 @@ function openPicker(formType) {
 }
 
 function renderPickerList() {
-  if (!_pickerForm) return;
+  if(!_pickerForm) return;
   const cfg = PICKER_CFG[_pickerForm];
-  const q = (document.getElementById('picker-q').value || '').toLowerCase();
-  let list = ST.sows.filter(s => cfg.statuses.includes(s.status));
-  if (q) list = list.filter(s =>
-    String(s.ear_tag || '').toLowerCase().includes(q) ||
-    String(s.sow_id || '').toLowerCase().includes(q)
+  const q = (document.getElementById('picker-q').value||'').toLowerCase();
+  let list = ST.sows.filter(s=>cfg.statuses.includes(s.status));
+  if(q) list = list.filter(s=>
+    String(s.ear_tag||'').toLowerCase().includes(q) ||
+    String(s.sow_id||'').toLowerCase().includes(q)
   );
-  if (cfg.useCycleId) {
-    list = list.map(s => ({ ...s, _cycId: s.sow_id + '-' + (s.current_parity || 0) }));
-  }
+  if(cfg.useCycleId) list = list.map(s=>({...s, _cycId:s.sow_id+'-'+(s.current_parity||0)}));
   _pickerList = list;
   const w = document.getElementById('picker-list');
-  if (list.length === 0) {
-    w.innerHTML = `<div class="picker-empty"><span class="pe-ico">${q ? '🔍' : '🐷'}</span>${q ? 'ไม่พบแม่สุกรที่ตรงกัน' : 'ไม่มีแม่สุกรในสถานะนี้'}</div>`;
+  if(list.length===0) {
+    w.innerHTML=`<div class="picker-empty"><span class="pe-ico">${q?'🔍':'🐷'}</span>${q?'ไม่พบแม่สุกรที่ตรงกัน':'ไม่มีแม่สุกรในสถานะนี้'}</div>`;
     return;
   }
-  w.innerHTML = list.map((s, i) => `
+  w.innerHTML = list.map((s,i)=>`
     <div class="pi" onclick="selectFromPicker(${i})">
       <span style="font-size:1.75rem;flex-shrink:0">🐷</span>
       <div class="pi-info">
         <div class="pi-tag">เบอร์หู ${s.ear_tag}</div>
-        <div class="pi-meta">${s.breed || '—'} · ท้องที่ ${s.current_parity || 0} · ${s.location || '—'}</div>
+        <div class="pi-meta">${s.breed||'—'} · ท้องที่ ${s.current_parity||0} · ${s.location||'—'}</div>
       </div>
       <span class="sstatus" style="${statusStyle(s.status)}">${statusLabel(s.status)}</span>
-      <span class="pi-cyc">${cfg.useCycleId ? s._cycId : s.sow_id}</span>
+      <span class="pi-cyc">${cfg.useCycleId?s._cycId:s.sow_id}</span>
     </div>`).join('');
 }
 
 function selectFromPicker(idx) {
   const sow = _pickerList[idx];
   const cfg = PICKER_CFG[_pickerForm];
-  // fill hidden input (sow_id หรือ cycle_id)
-  const val = cfg.useCycleId ? sow._cycId : sow.sow_id;
-  document.getElementById(cfg.hidId).value = val;
-  // update button label & style
+  document.getElementById(cfg.hidId).value = cfg.useCycleId ? sow._cycId : sow.sow_id;
   document.getElementById(cfg.lblId).textContent = cfg.makeLbl(sow);
   document.getElementById(cfg.btnId).classList.add('sel');
   closeModal('m-sowpicker');
 }
 
 function resetPickerBtn(btnId, lblId, hidId) {
-  document.getElementById(hidId).value = '';
-  document.getElementById(lblId).textContent = '— กดเพื่อเลือกแม่สุกร —';
+  document.getElementById(hidId).value='';
+  document.getElementById(lblId).textContent='— กดเพื่อเลือกแม่สุกร —';
   document.getElementById(btnId).classList.remove('sel');
 }
 
