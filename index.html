@@ -6,7 +6,7 @@
 <title>นิพนธ์ฟาร์ม</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 :root{
   --g9:#173404;--g8:#27500A;--g7:#3B6D11;--g6:#639922;--g5:#7AB52A;
   --g4:#97C459;--g2:#C0DD97;--g1:#D8EDB8;--g0:#EAF3DE;
@@ -15,90 +15,90 @@
   --t6:#0F6E56;--t4:#1D9E75;--t0:#E1F5EE;
   --gray9:#1a1a1a;--gray8:#2C2C2A;--gray7:#444441;--gray6:#5F5E5A;
   --gray4:#888780;--gray2:#D3D1C7;--gray1:#E8E6DF;--gray0:#F4F2EB;
-  --bg:#F7F6F2;--card:#FFFFFF;--text:#1C1B18;--muted:#6B6A66;--hint:#9A9894;
-  --border:#E2E0D8;--bl:#ECEAE3;
-  --rad:14px;--rads:10px;--radl:18px;
-  --sh:0 1px 4px rgba(0,0,0,.06);
-  --shm:0 4px 16px rgba(0,0,0,.08);
+  --bg:#F0EDE4;--card:#FFF;--text:#1C1B18;--muted:#5F5E5A;--hint:#888780;
+  --border:#D8D5CC;--bl:#E8E6DE;
+  --rad:12px;--rads:8px;--radl:16px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shm:0 4px 12px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:16px;-webkit-text-size-adjust:100%}
-body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
 
 /* SCREENS */
 .screen{display:none;min-height:100vh;flex-direction:column}
 .screen.active{display:flex}
 
 /* LOGIN */
-#screen-login{background:linear-gradient(160deg,#1C3A0A 0%,#3B6D11 60%,#639922 100%);align-items:center;justify-content:center;padding:2rem 1.25rem}
-.login-card{background:var(--card);border-radius:22px;padding:2rem 1.75rem;width:100%;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+#screen-login{background:linear-gradient(150deg,var(--g8) 0%,var(--g6) 100%);align-items:center;justify-content:center;padding:2rem 1.25rem}
+.login-card{background:var(--card);border-radius:var(--radl);padding:2rem 1.75rem;width:100%;max-width:360px;box-shadow:var(--shm)}
 .login-logo{text-align:center;margin-bottom:1.5rem}
-.login-logo .pig{font-size:52px;display:block;margin-bottom:.5rem}
-.login-logo h1{font-size:1.6rem;font-weight:800;color:var(--g7);font-family:'Noto Sans Thai',sans-serif;letter-spacing:-.3px}
-.login-logo p{font-size:.8rem;color:var(--hint);margin-top:.25rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.2px}
+.login-logo .pig{font-size:52px;display:block;margin-bottom:.375rem}
+.login-logo h1{font-size:1.5rem;font-weight:700;color:var(--g7)}
+.login-logo p{font-size:.82rem;color:var(--muted);margin-top:.2rem}
 .conn-banner{border-radius:var(--rads);padding:.625rem 1rem;font-size:.82rem;font-weight:600;text-align:center;margin-bottom:1rem;display:none}
 .conn-banner.checking{display:block;background:var(--a0);color:var(--a6)}
 .conn-banner.ok{display:block;background:var(--g0);color:var(--g7)}
 .conn-banner.fail{display:block;background:var(--r0);color:var(--r6)}
-.user-btn{width:100%;display:flex;align-items:center;gap:.875rem;padding:.9rem 1rem;background:#FAFAF7;border:1.5px solid var(--bl);border-radius:14px;margin-bottom:.625rem;cursor:pointer;transition:all .18s;text-align:left;font-family:'Sarabun',sans-serif}
-.user-btn:hover{background:var(--g0);border-color:var(--g4)}
+.user-btn{width:100%;display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;background:#FAFAF7;border:1.5px solid var(--bl);border-radius:var(--rad);margin-bottom:.5rem;cursor:pointer;transition:all .15s;text-align:left;font-family:'Sarabun',sans-serif}
+.user-btn:hover{background:var(--g0);border-color:var(--g4);transform:translateX(2px)}
 .user-btn:active{transform:scale(.98)}
 .user-icon{font-size:1.75rem;flex-shrink:0}
-.user-name{font-size:1rem;font-weight:700;color:var(--g8);font-family:'Noto Sans Thai',sans-serif}
+.user-name{font-size:1rem;font-weight:700;color:var(--g8)}
 .user-role{font-size:.75rem;color:var(--muted);margin-top:.1rem}
 .login-err{background:var(--r0);border:1px solid var(--r1);border-radius:var(--rads);padding:.625rem 1rem;font-size:.85rem;color:var(--r6);margin-top:.75rem;display:none}
 
 /* APP */
 #screen-app{background:var(--bg)}
-.app-bar{background:#fff;color:var(--text);padding:0 1rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--bl)}
-.app-bar h2{font-size:1.1rem;font-weight:800;font-family:'Noto Sans Thai',sans-serif;color:var(--text);letter-spacing:-.2px}
+.app-bar{background:var(--g8);color:#fff;padding:0 1rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.app-bar h2{font-size:1.05rem;font-weight:600}
 .bar-right{display:flex;align-items:center;gap:.5rem}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--gray4)}
 .dot.on{background:#4ade80}
 .dot.off{background:var(--r4)}
-.ubadge{background:var(--g0);color:var(--g7);border-radius:20px;padding:.2rem .75rem;font-size:.78rem;font-weight:600;border:1px solid var(--g2)}
-.hbtn{background:var(--gray1);border:none;color:var(--text);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
-.hbtn:hover{background:var(--gray2)}
+.ubadge{background:rgba(255,255,255,.15);border-radius:20px;padding:.2rem .7rem;font-size:.8rem}
+.hbtn{background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:var(--rads);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center}
+.hbtn:hover{background:rgba(255,255,255,.2)}
 
 /* BOTTOM NAV */
-.bnav{background:#fff;border-top:1px solid var(--bl);display:flex;position:sticky;bottom:0;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:.5rem .25rem;cursor:pointer;background:transparent;border:none;color:var(--hint);font-family:'Sarabun',sans-serif;font-size:.68rem;font-weight:500;transition:color .15s;position:relative}
+.bnav{background:var(--card);border-top:1.5px solid var(--bl);display:flex;position:sticky;bottom:0;z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:.6rem .25rem;cursor:pointer;background:transparent;border:none;color:var(--muted);font-family:'Sarabun',sans-serif;font-size:.7rem;font-weight:500;transition:color .15s;position:relative}
 .ni .ico{font-size:1.35rem;line-height:1}
-.ni.active{color:var(--g7)}.ni.active::before{content:'';display:block;width:20px;height:3px;background:var(--g6);border-radius:2px;position:absolute;top:0;border-radius:0 0 3px 3px}
+.ni.active{color:var(--g7)}
 .ni .bdg{position:absolute;top:4px;right:calc(50% - 18px);background:var(--r4);color:#fff;font-size:.6rem;font-weight:700;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
 
 /* PAGES */
 .page{display:none;padding:1rem;padding-bottom:6rem;flex:1}
 .page.active{display:block}
-.ptitle{font-size:1.25rem;font-weight:800;color:var(--text);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;font-family:'Noto Sans Thai',sans-serif;letter-spacing:-.2px}
+.ptitle{font-size:1.2rem;font-weight:700;color:var(--g8);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem}
 
 /* CARD */
-.card{background:#fff;border-radius:16px;border:1px solid var(--bl);padding:1rem 1.125rem}
+.card{background:var(--card);border-radius:var(--rad);border:1.5px solid var(--bl);padding:1rem 1.125rem;box-shadow:var(--sh)}
 .card+.card{margin-top:.75rem}
-.ctitle{font-size:.9rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.4rem;font-family:'Noto Sans Thai',sans-serif}
+.ctitle{font-size:.95rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:.4rem}
 
 /* KPI */
 .kgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1rem}
-.kcard{background:#fff;border-radius:16px;padding:.875rem 1rem;border:1px solid var(--bl)}
-.klabel{font-size:.7rem;font-weight:600;color:var(--hint);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.4rem}
-.kval{font-size:1.8rem;font-weight:500;color:var(--text);font-family:'IBM Plex Mono',monospace;line-height:1}
-.ksub{font-size:.72rem;color:var(--hint);margin-top:.3rem;display:flex;align-items:center;gap:.3rem}
-.ka .kval{color:var(--a6)}.kt .kval{color:var(--t6)}.kr .kval{color:var(--r6)}.kchip{display:inline-flex;align-items:center;font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:20px}.kchip-ok{background:var(--g0);color:var(--g7)}.kchip-warn{background:var(--a0);color:var(--a6)}
+.kcard{background:var(--card);border-radius:var(--rad);border:1.5px solid var(--bl);padding:.875rem 1rem;box-shadow:var(--sh)}
+.klabel{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:.3rem}
+.kval{font-size:1.75rem;font-weight:700;color:var(--g7);font-family:'IBM Plex Mono',monospace;line-height:1}
+.ksub{font-size:.75rem;color:var(--hint);margin-top:.2rem}
+.ka .kval{color:var(--a6)}.kt .kval{color:var(--t6)}.kr .kval{color:var(--r6)}
 
 /* STATUS PILLS */
 .srow{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
-.spill{display:flex;align-items:center;gap:.35rem;padding:.3rem .75rem;border-radius:20px;font-size:.75rem;font-weight:700}
+.spill{display:flex;align-items:center;gap:.35rem;padding:.35rem .75rem;border-radius:20px;font-size:.8rem;font-weight:600}
 .sp-o{background:var(--g0);color:var(--g7)}
 .sp-s{background:var(--t0);color:var(--t6)}
 .sp-p{background:var(--a0);color:var(--a6)}
 .sp-l{background:var(--r0);color:var(--r6)}
 
 /* TASKS */
-.titem{display:flex;align-items:flex-start;gap:.75rem;padding:.875rem 1rem;background:#fff;border-radius:14px;border:1px solid var(--bl);border-left:3px solid var(--g4);margin-bottom:.625rem;cursor:pointer;transition:all .15s}
+.titem{display:flex;align-items:flex-start;gap:.75rem;padding:.875rem 1rem;background:var(--card);border-radius:var(--rad);border-left:4px solid var(--g4);border-top:1.5px solid var(--bl);border-right:1.5px solid var(--bl);border-bottom:1.5px solid var(--bl);margin-bottom:.625rem;box-shadow:var(--sh);cursor:pointer;transition:transform .1s}
 .titem:active{transform:scale(.99)}
-.titem.urg{border-left-color:var(--r4);background:#FFFAF9}
-.tlabel{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.3}
-.tdue{font-size:.75rem;color:var(--hint);margin-top:.2rem}
+.titem.urg{border-left-color:var(--r4);background:var(--r0)}
+.tlabel{font-size:.9rem;font-weight:600;color:var(--text)}
+.tdue{font-size:.78rem;color:var(--muted);margin-top:.15rem}
 .tbdg{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:.25rem}
 .bdg-u{background:var(--r1);color:var(--r6)}
 .bdg-n{background:var(--g0);color:var(--g7)}
@@ -110,13 +110,13 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .sbar input{flex:1;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:.95rem;background:var(--card)}
 .ftabs{display:flex;gap:.4rem;overflow-x:auto;padding-bottom:.25rem;margin-bottom:.875rem;scrollbar-width:none}
 .ftabs::-webkit-scrollbar{display:none}
-.ftab{flex-shrink:0;padding:.4rem .875rem;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--hint);font-family:'Sarabun',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .15s}
-.ftab.active{background:var(--text);color:#fff;border-color:var(--text)}
-.sitem{display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;background:#fff;border-radius:14px;border:1px solid var(--bl);margin-bottom:.625rem;cursor:pointer;transition:all .15s}
+.ftab{flex-shrink:0;padding:.4rem .875rem;border-radius:20px;border:1.5px solid var(--border);background:var(--card);color:var(--muted);font-family:'Sarabun',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.ftab.active{background:var(--g7);color:#fff;border-color:var(--g7)}
+.sitem{display:flex;align-items:center;gap:.875rem;padding:.875rem 1rem;background:var(--card);border-radius:var(--rad);border:1.5px solid var(--bl);margin-bottom:.625rem;box-shadow:var(--sh);cursor:pointer;transition:transform .1s}
 .sitem:active{transform:scale(.99)}
-.savatar{width:44px;height:44px;border-radius:50%;background:var(--g0);border:1.5px solid var(--g2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.stag{font-size:.95rem;font-weight:700;color:var(--text);font-family:'Noto Sans Thai',sans-serif}
-.smeta{font-size:.75rem;color:var(--hint);margin-top:.15rem}
+.savatar{width:44px;height:44px;border-radius:50%;background:var(--g0);border:2px solid var(--g2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.stag{font-size:1rem;font-weight:700;color:var(--g8)}
+.smeta{font-size:.78rem;color:var(--muted);margin-top:.1rem}
 .sstatus{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap}
 
 /* DETAIL */
@@ -129,19 +129,19 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .crow{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:.5rem;align-items:center;padding:.5rem .625rem;border-radius:var(--rads);font-size:.8rem}
 .crow:nth-child(even){background:var(--gray0)}
 .crow.ch{font-weight:700;color:var(--muted);font-size:.72rem;text-transform:uppercase;border-bottom:1.5px solid var(--border)}
-.cull-box{background:#FFF5F5;border:1px solid var(--r1);border-radius:12px;padding:.75rem 1rem;margin-bottom:.875rem}
+.cull-box{background:var(--r0);border:1.5px solid var(--r1);border-radius:var(--rads);padding:.75rem 1rem;margin-bottom:.875rem}
 .cull-title{color:var(--r6);font-weight:700;font-size:.875rem;margin-bottom:.25rem}
 .cull-item{font-size:.8rem;color:var(--r6);padding:.1rem 0}
 
 /* FORMS */
 .fg{margin-bottom:1.25rem}
-.fg label{display:block;font-size:.72rem;font-weight:700;color:var(--hint);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.7px}
-.fg input,.fg select,.fg textarea{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:12px;font-family:'Sarabun',sans-serif;font-size:1rem;background:#FAFAF7;color:var(--text);transition:border-color .15s}
-.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--g6);background:#fff;box-shadow:0 0 0 3px rgba(99,153,34,.1)}
-.fsec-title{font-size:.72rem;font-weight:700;color:var(--g7);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.75rem;padding-bottom:.375rem;border-bottom:1.5px solid var(--g1);font-family:'Noto Sans Thai',sans-serif}
+.fg label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.5px}
+.fg input,.fg select,.fg textarea{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:1rem;background:#FAFAF7;color:var(--text);transition:border-color .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--g6);background:#fff}
+.fsec-title{font-size:.82rem;font-weight:700;color:var(--g8);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.75rem;padding-bottom:.375rem;border-bottom:1.5px solid var(--g1)}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
 .rgroup{display:flex;gap:.5rem;flex-wrap:wrap}
-.rbtn{padding:.5rem 1rem;border:1.5px solid var(--border);border-radius:10px;font-family:'Sarabun',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);transition:all .15s}
+.rbtn{padding:.5rem 1rem;border:1.5px solid var(--border);border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:.875rem;font-weight:600;cursor:pointer;background:var(--card);color:var(--muted);transition:all .15s}
 .rbtn.sel{background:var(--g0);border-color:var(--g6);color:var(--g7)}
 .calc-box{background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--rads);padding:.75rem 1rem;margin-top:.75rem}
 .calc-title{font-size:.75rem;font-weight:700;color:var(--g7);text-transform:uppercase;letter-spacing:.4px;margin-bottom:.5rem}
@@ -150,9 +150,9 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .calc-row span:last-child{font-weight:700;color:var(--g8);font-family:'IBM Plex Mono',monospace}
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.8rem 1.25rem;border:none;border-radius:12px;font-family:'Sarabun',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
-.btn-p{background:var(--text);color:#fff;width:100%}
-.btn-p:hover{background:#333}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.75rem 1.25rem;border:none;border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-p{background:var(--g7);color:#fff;width:100%}
+.btn-p:hover{background:var(--g8)}
 .btn-p:active{transform:scale(.98)}
 .btn-p:disabled{background:var(--gray4);cursor:not-allowed}
 .btn-s{background:var(--gray1);color:var(--gray8);border:1.5px solid var(--border)}
@@ -164,10 +164,10 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-end}
 .overlay.active{display:flex}
-.sheet{background:#fff;border-radius:22px 22px 0 0;padding:1.25rem 1.5rem calc(1.25rem + env(safe-area-inset-bottom));width:100%;max-height:90vh;overflow-y:auto;animation:up .22s cubic-bezier(.4,0,.2,1)}
+.sheet{background:var(--card);border-radius:var(--radl) var(--radl) 0 0;padding:1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));width:100%;max-height:90vh;overflow-y:auto;animation:up .25s ease}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .handle{width:40px;height:4px;background:var(--gray2);border-radius:2px;margin:0 auto 1.25rem}
-.mtitle{font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:1.25rem;font-family:'Noto Sans Thai',sans-serif}
+.mtitle{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1.25rem}
 .mbtns{display:flex;gap:.625rem;margin-top:1.25rem}
 .mbtns .btn{flex:1}
 
@@ -175,59 +175,63 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
 .chart-wrap{height:200px;position:relative;margin:.75rem 0}
 
 /* LOADER */
-.loader-overlay{position:fixed;inset:0;background:rgba(247,246,242,.9);z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
+.loader-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;display:none;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
 .loader-overlay.active{display:flex}
-.spinner{width:36px;height:36px;border:2.5px solid var(--g1);border-top-color:var(--g7);border-radius:50%;animation:spin .65s linear infinite}
+.spinner{width:40px;height:40px;border:3px solid var(--g1);border-top-color:var(--g7);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#loader-text{color:var(--hint);font-weight:500;font-size:.85rem}
+#loader-text{color:var(--g7);font-weight:600;font-size:.9rem}
 
 /* TOAST */
 .toasts{position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:.5rem;min-width:280px;max-width:90vw;pointer-events:none}
-.toast{background:#1C1B18;color:#fff;padding:.7rem 1.125rem;border-radius:12px;font-size:.875rem;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,.15);animation:tin .22s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;gap:.5rem}
-.toast.ok{background:#27500A}.toast.err{background:var(--r6)}.toast.warn{background:var(--a6)}
+.toast{background:var(--gray8);color:#fff;padding:.75rem 1.125rem;border-radius:var(--rad);font-size:.875rem;font-weight:500;box-shadow:var(--shm);animation:tin .25s ease;display:flex;align-items:center;gap:.5rem}
+.toast.ok{background:var(--g7)}.toast.err{background:var(--r6)}.toast.warn{background:var(--a6)}
 @keyframes tin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 
 /* REPORTS / SETTINGS */
-.tech-card{background:#fff;border-radius:14px;border:1px solid var(--bl);padding:.875rem 1rem;display:flex;align-items:center;gap:.875rem;margin-bottom:.625rem}
+.tech-card{background:var(--card);border-radius:var(--rad);border:1.5px solid var(--bl);padding:.875rem 1rem;display:flex;align-items:center;gap:.875rem;box-shadow:var(--sh);margin-bottom:.625rem}
 .tech-av{width:40px;height:40px;border-radius:50%;background:var(--t0);border:2px solid var(--t4);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
 .sett-item{display:flex;align-items:center;justify-content:space-between;padding:.875rem 0;border-bottom:1px solid var(--bl)}
 .sett-item:last-child{border-bottom:none}
-.sett-lbl{font-weight:700;font-size:.9rem;font-family:'Noto Sans Thai',sans-serif}
+.sett-lbl{font-weight:600;font-size:.9rem}
 .sett-desc{font-size:.78rem;color:var(--muted);margin-top:.1rem}
-.sett-inp{width:80px;padding:.4rem .625rem;border:1.5px solid var(--border);border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:.9rem;text-align:center}
+.sett-inp{width:80px;padding:.4rem .625rem;border:1.5px solid var(--border);border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:.9rem;text-align:center}
 
-@media(min-width:768px){.kgrid{grid-template-columns:repeat(4,1fr)}.ni::before{display:none!important}#screen-app{max-width:480px;margin:0 auto;border:1px solid var(--bl)}.app-bar{border-radius:0}}
+@media(min-width:768px){
+  .kgrid{grid-template-columns:repeat(4,1fr)}
+  #screen-app{max-width:480px;margin:0 auto;box-shadow:0 0 40px rgba(0,0,0,.15)}
+}
 
 /* ── SOW PICKER BUTTON ── */
-.sow-pick-btn{width:100%;display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:#FAFAF7;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;text-align:left;font-family:'Sarabun',sans-serif;font-size:.95rem;transition:all .15s;color:var(--hint)}
-.sow-pick-btn:hover{background:var(--g0);border-color:var(--g4)}
+.sow-pick-btn{width:100%;display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:#FAFAF7;border:1.5px solid var(--border);border-radius:var(--rads);cursor:pointer;text-align:left;font-family:'Sarabun',sans-serif;font-size:.95rem;transition:all .15s;color:var(--muted)}
+.sow-pick-btn:hover,.sow-pick-btn:active{background:var(--g0);border-color:var(--g4)}
 .sow-pick-btn.sel{background:var(--g0);border-color:var(--g6)}
-.sow-pick-btn.sel .spb-lbl{color:var(--g7);font-weight:700}
-.spb-ico{font-size:1.1rem;flex-shrink:0;line-height:1}
+.sow-pick-btn.sel .spb-lbl{color:var(--g7);font-weight:600}
+.spb-ico{font-size:1.2rem;flex-shrink:0;line-height:1}
 .spb-lbl{flex:1}
-.spb-arr{font-size:1.25rem;line-height:1;flex-shrink:0;color:var(--border)}
+.spb-arr{font-size:1.3rem;line-height:1;flex-shrink:0}
 /* ── PICKER LIST ── */
-.pi{display:flex;align-items:center;gap:.875rem;padding:.875rem 0;border-bottom:1px solid var(--bl);cursor:pointer}
+.pi{display:flex;align-items:center;gap:.875rem;padding:.875rem 0;border-bottom:1px solid var(--bl);cursor:pointer;transition:background .1s}
 .pi:last-child{border-bottom:none}
-.pi:active{opacity:.7}
+.pi:active{background:var(--g0);margin:0 -1.5rem;padding-left:1.5rem;padding-right:1.5rem}
 .pi-info{flex:1;min-width:0}
-.pi-tag{font-size:.95rem;font-weight:700;color:var(--text);font-family:'Noto Sans Thai',sans-serif}
-.pi-meta{font-size:.75rem;color:var(--hint);margin-top:.1rem}
-.pi-cyc{font-size:.72rem;font-family:'IBM Plex Mono',monospace;color:var(--g7);background:var(--g0);padding:2px 8px;border-radius:20px;flex-shrink:0}
-.picker-empty{text-align:center;padding:3rem 1rem;color:var(--hint)}
+.pi-tag{font-size:1rem;font-weight:700;color:var(--text)}
+.pi-meta{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+.pi-cyc{font-size:.74rem;font-family:'IBM Plex Mono',monospace;color:var(--g7);background:var(--g0);padding:2px 8px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.picker-empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
 .picker-empty .pe-ico{font-size:2.5rem;display:block;margin-bottom:.5rem}
 /* ── TASK ACTION BUTTON ── */
-.tact{display:inline-flex;align-items:center;gap:.3rem;margin-top:.5rem;background:var(--text);color:#fff;border:none;border-radius:8px;padding:.35rem .8rem;font-size:.75rem;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;transition:opacity .15s}
+.titem{cursor:pointer}
+.tact{display:inline-flex;align-items:center;gap:.35rem;margin-top:.5rem;background:var(--g7);color:#fff;border:none;border-radius:var(--rads);padding:.35rem .85rem;font-size:.78rem;font-weight:600;font-family:'Sarabun',sans-serif;cursor:pointer;transition:background .15s}
 .titem.urg .tact{background:var(--r6)}
-.tact:hover{opacity:.85}
+.tact:hover{opacity:.88}
 /* ── NEXT STEP BANNER ── */
-.next-step{display:flex;align-items:center;gap:.75rem;background:var(--g0);border:1px solid var(--g2);border-radius:12px;padding:.75rem 1rem;margin-bottom:.875rem}
-.ns-ico{font-size:1.5rem;flex-shrink:0}
+.next-step{display:flex;align-items:center;gap:.625rem;background:var(--g0);border:1.5px solid var(--g2);border-radius:var(--rads);padding:.75rem 1rem;margin-bottom:.875rem}
+.ns-ico{font-size:1.4rem;flex-shrink:0}
 .ns-body{flex:1;min-width:0}
-.ns-label{font-size:.72rem;color:var(--g7);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.ns-action{font-size:.95rem;font-weight:800;color:var(--text);font-family:'Noto Sans Thai',sans-serif;margin-top:.1rem}
-.ns-date{font-size:.75rem;color:var(--a6);margin-top:.15rem;font-family:'IBM Plex Mono',monospace}
-.ns-btn{background:var(--text);color:#fff;border:none;border-radius:10px;padding:.5rem 1rem;font-size:.8rem;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;flex-shrink:0}
+.ns-label{font-size:.82rem;color:var(--muted)}
+.ns-action{font-size:.95rem;font-weight:700;color:var(--g7)}
+.ns-date{font-size:.8rem;color:var(--a6);margin-top:.1rem}
+.ns-btn{background:var(--g7);color:#fff;border:none;border-radius:var(--rads);padding:.45rem .9rem;font-size:.82rem;font-weight:600;font-family:'Sarabun',sans-serif;cursor:pointer;flex-shrink:0;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -484,9 +488,9 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div class="mtitle" id="picker-title">🐷 เลือกแม่สุกร</div>
     <div style="margin-bottom:.625rem">
       <input type="search" id="picker-q" placeholder="🔍 ค้นหาเบอร์หู หรือ รหัส…" oninput="renderPickerList()"
-        style="width:100%;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:12px;font-family:'Sarabun',sans-serif;font-size:.95rem;background:#FAFAF7;outline:none">
+        style="width:100%;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:.95rem;background:#FAFAF7;outline:none">
     </div>
-    <div id="picker-hint" style="font-size:.75rem;color:var(--hint);margin-bottom:.5rem"></div>
+    <div id="picker-hint" style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem;padding:0 .1rem"></div>
     <div id="picker-list" style="overflow-y:auto;flex:1;margin:0 -1.5rem;padding:0 1.5rem"></div>
   </div>
 </div>
@@ -728,13 +732,15 @@ async function loadDashboard() {
   if(tr.success) renderTasks(tr.tasks);
 }
 
+// map task type → form tab + sow status ที่ต้อง prefill
 const TASK_FORM = {
-  PREG_CHECK_1: {form:'preg',   label:'บันทึกตรวจท้อง'},
-  PREG_CHECK_2: {form:'preg',   label:'บันทึกตรวจท้อง'},
-  MOVE_FARROWING:{form:'farrow',label:'บันทึกย้ายเล้าคลอด'},
-  NEAR_FARROWING:{form:'farrow',label:'บันทึกคลอด'},
-  WEANING_DUE:  {form:'wean',   label:'บันทึกหย่านม'},
+  PREG_CHECK_1: { form:'preg',   label:'บันทึกตรวจท้อง' },
+  PREG_CHECK_2: { form:'preg',   label:'บันทึกตรวจท้อง' },
+  MOVE_FARROWING:{ form:'farrow', label:'บันทึกย้ายเล้าคลอด' },
+  NEAR_FARROWING:{ form:'farrow', label:'บันทึกคลอด' },
+  WEANING_DUE:  { form:'wean',   label:'บันทึกหย่านม' },
 };
+
 function renderTasks(tasks) {
   const w = document.getElementById('tasks-wrap');
   const b = document.getElementById('task-badge');
@@ -746,64 +752,75 @@ function renderTasks(tasks) {
   const urg = tasks.filter(t=>t.priority==='URGENT').length;
   const nav = document.getElementById('n-dashboard');
   let nb = nav.querySelector('.bdg');
-  if(urg>0){if(!nb){nb=document.createElement('span');nb.className='bdg';nav.appendChild(nb);}nb.textContent=urg;}
+  if(urg>0) { if(!nb){nb=document.createElement('span');nb.className='bdg';nav.appendChild(nb);} nb.textContent=urg; }
   else if(nb) nb.remove();
+
   const ico = {PREG_CHECK_1:'🩺',PREG_CHECK_2:'🔬',MOVE_FARROWING:'🏠',NEAR_FARROWING:'🐣',WEANING_DUE:'🍼'};
+  // store tasks for quickRecord
   w._tasks = tasks;
   w.innerHTML = tasks.map((t,i)=>{
     const tf = TASK_FORM[t.type];
     const actBtn = tf ? `<button class="tact" onclick="event.stopPropagation();quickRecord(${i})">✏️ ${tf.label} →</button>` : '';
     return `<div class="titem ${t.priority==='URGENT'?'urg':''}" onclick="showDetail('${t.sow_id}')">
-      <span style="font-size:1.4rem;flex-shrink:0;line-height:1;margin-top:.1rem">${ico[t.type]||'📋'}</span>
+      <span style="font-size:1.5rem;flex-shrink:0">${ico[t.type]||'📋'}</span>
       <div style="flex:1">
         <div class="tlabel">${t.label}</div>
         <div class="tdue">กำหนด ${fmtDate(t.due_date)}</div>
-        <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-top:.25rem">
-          <span class="tbdg ${t.priority==='URGENT'?'bdg-u':'bdg-n'}">${t.priority==='URGENT'?'🔴 ด่วน':'🟡 เร็วๆ นี้'}</span>
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.25rem">
+          <span class="tbdg ${t.priority==='URGENT'?'bdg-u':'bdg-n'}">${t.priority==='URGENT'?'🔴 ด่วน!':'🟡 เร็วๆ นี้'}</span>
           ${actBtn}
         </div>
       </div>
     </div>`;
   }).join('');
+  // re-attach task data to rendered items
   w._tasks = tasks;
 }
+
+// กดปุ่มจาก task → ไปหน้าบันทึก และ prefill แม่สุกรตัวนั้นเลย
 function quickRecord(idx) {
   const w = document.getElementById('tasks-wrap');
   const t = (w._tasks||[])[idx];
   if(!t) return;
   const tf = TASK_FORM[t.type];
   if(!tf) return;
+  // หา sow จาก cache
   const sow = ST.sows.find(s=>s.sow_id===t.sow_id);
+  // ไปหน้าบันทึก เปิด form ที่ถูก
   go('record');
-  const fnames = ['service','preg','farrow','wean'];
-  document.querySelectorAll('#rec-tabs .ftab').forEach((tab,i)=>tab.classList.toggle('active',fnames[i]===tf.form));
-  fnames.forEach(f=>{ document.getElementById('f-'+f).style.display = f===tf.form?'block':'none'; });
+  // เปิด tab ที่ถูก
+  const tabs = document.querySelectorAll('#rec-tabs .ftab');
+  const formNames = ['service','preg','farrow','wean'];
+  tabs.forEach((tab,i)=>{
+    const active = formNames[i]===tf.form;
+    tab.classList.toggle('active',active);
+  });
+  ['service','preg','farrow','wean'].forEach(f=>{
+    document.getElementById('f-'+f).style.display = f===tf.form?'block':'none';
+  });
+  // prefill วันที่เป็นวันนี้
   const today = new Date().toISOString().split('T')[0];
-  if(tf.form==='preg')   document.getElementById('pc-date').value=today;
-  if(tf.form==='farrow') document.getElementById('fr-date').value=today;
-  if(tf.form==='wean')   document.getElementById('wn-date').value=today;
-  if(sow) _prefillSow(sow, tf.form);
-  window.scrollTo(0,0);
-}
-function _prefillSow(sow, formType) {
-  const cycId = sow.sow_id+'-'+(sow.current_parity||0);
-  if(formType==='service'){
-    document.getElementById('sv-sow').value=sow.sow_id;
-    document.getElementById('sv-sow-lbl').textContent=`เบอร์ ${sow.ear_tag} (${sow.sow_id})`;
-    document.getElementById('sv-sow-btn').classList.add('sel');
-  } else if(formType==='preg'){
-    document.getElementById('pc-cyc').value=cycId;
-    document.getElementById('pc-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId}`;
-    document.getElementById('pc-cyc-btn').classList.add('sel');
-  } else if(formType==='farrow'){
-    document.getElementById('fr-cyc').value=cycId;
-    document.getElementById('fr-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId}`;
-    document.getElementById('fr-cyc-btn').classList.add('sel');
-  } else if(formType==='wean'){
-    document.getElementById('wn-cyc').value=cycId;
-    document.getElementById('wn-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId}`;
-    document.getElementById('wn-cyc-btn').classList.add('sel');
+  if(tf.form==='preg')    { document.getElementById('pc-date').value=today; }
+  if(tf.form==='farrow')  { document.getElementById('fr-date').value=today; }
+  if(tf.form==='wean')    { document.getElementById('wn-date').value=today; }
+  // prefill แม่สุกร — เหมือนกับกด picker แล้วเลือก
+  if(sow) {
+    const cycId = sow.sow_id+'-'+(sow.current_parity||0);
+    if(tf.form==='preg') {
+      document.getElementById('pc-cyc').value=cycId;
+      document.getElementById('pc-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ผสมแล้ว`;
+      document.getElementById('pc-cyc-btn').classList.add('sel');
+    } else if(tf.form==='farrow') {
+      document.getElementById('fr-cyc').value=cycId;
+      document.getElementById('fr-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ท้องอยู่`;
+      document.getElementById('fr-cyc-btn').classList.add('sel');
+    } else if(tf.form==='wean') {
+      document.getElementById('wn-cyc').value=cycId;
+      document.getElementById('wn-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · เลี้ยงลูก`;
+      document.getElementById('wn-cyc-btn').classList.add('sel');
+    }
   }
+  window.scrollTo(0,0);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -858,23 +875,33 @@ async function showDetail(sowId) {
       <span style="color:var(--g7)">${c.live_born||'—'} ตัว</span>
       <span>${c.weaned_count||'—'} หย่านม</span>
     </div>`).join('');
-  const latestCyc = (cc||[])[0];
-  const NS_CFG = {
-    OPEN:     {ico:'🔬',label:'ขั้นตอนถัดไป',action:'บันทึกการผสมพันธุ์',form:'service',date:null},
-    SERVED:   {ico:'🩺',label:'รอตรวจท้อง',action:'บันทึกผลตรวจท้อง',form:'preg',date:latestCyc?.preg_check1_due},
-    PREGNANT: {ico:'🐣',label:'รอคลอด',action:'บันทึกการคลอด',form:'farrow',date:latestCyc?.expected_farrowing},
-    LACTATING:{ico:'🍼',label:'รอหย่านม',action:'บันทึกการหย่านม',form:'wean',date:latestCyc?.actual_farrowing_date},
+  // คำนวณ next-step banner
+  const cycId = s.sow_id+'-'+(s.current_parity||0);
+  const NS = {
+    OPEN:      { ico:'🔬', label:'ขั้นตอนถัดไป', action:'บันทึกการผสมพันธุ์', form:'service', date:null },
+    SERVED:    { ico:'🩺', label:'รอตรวจท้อง', action:'บันทึกผลตรวจท้อง', form:'preg', date:null },
+    PREGNANT:  { ico:'🐣', label:'รอคลอด', action:'บันทึกการคลอด', form:'farrow', date:null },
+    LACTATING: { ico:'🍼', label:'รอหย่านม', action:'บันทึกการหย่านม', form:'wean', date:null },
+    CULLED:    null
   };
-  const ns = NS_CFG[s.status];
-  const nsBanner = ns ? `<div class="next-step">
-    <span class="ns-ico">${ns.ico}</span>
-    <div class="ns-body">
-      <div class="ns-label">${ns.label}</div>
-      <div class="ns-action">${ns.action}</div>
-      ${ns.date?`<div class="ns-date">📅 ${fmtDate(ns.date)}</div>`:''}
-    </div>
-    <button class="ns-btn" onclick="goRecordFor('${s.sow_id}','${ns.form}')">บันทึก →</button>
-  </div>` : '';
+  // ดึงวันที่สำคัญจาก cycle ล่าสุด
+  const latestCyc = (cc||[])[0];
+  if(latestCyc && NS[s.status]) {
+    if(s.status==='SERVED')   NS.SERVED.date   = latestCyc.preg_check1_due;
+    if(s.status==='PREGNANT') NS.PREGNANT.date = latestCyc.expected_farrowing;
+    if(s.status==='LACTATING') NS.LACTATING.date = latestCyc.actual_farrowing_date;
+  }
+  const ns = NS[s.status];
+  const nsBanner = ns ? `
+    <div class="next-step">
+      <span class="ns-ico">${ns.ico}</span>
+      <div class="ns-body">
+        <div class="ns-label">${ns.label}</div>
+        <div class="ns-action">${ns.action}</div>
+        ${ns.date ? `<div class="ns-date">📅 ${fmtDate(ns.date)}</div>` : ''}
+      </div>
+      <button class="ns-btn" onclick="goRecordFor('${s.sow_id}','${ns.form}')">บันทึก →</button>
+    </div>` : '';
 
   document.getElementById('detail-wrap').innerHTML = `
     <div class="card">
@@ -893,19 +920,45 @@ async function showDetail(sowId) {
     </div>`;
   go('sow-detail');
 }
+
+// จากหน้าประวัติแม่สุกร → กดบันทึก → ไปหน้าบันทึกพร้อม prefill
 function goRecordFor(sowId, formType) {
   const sow = ST.sows.find(s=>s.sow_id===sowId);
   go('record');
-  const fnames = ['service','preg','farrow','wean'];
-  document.querySelectorAll('#rec-tabs .ftab').forEach((tab,i)=>tab.classList.toggle('active',fnames[i]===formType));
-  fnames.forEach(f=>{ document.getElementById('f-'+f).style.display = f===formType?'block':'none'; });
+  const formNames = ['service','preg','farrow','wean'];
+  document.querySelectorAll('#rec-tabs .ftab').forEach((tab,i)=>{
+    tab.classList.toggle('active', formNames[i]===formType);
+  });
+  ['service','preg','farrow','wean'].forEach(f=>{
+    document.getElementById('f-'+f).style.display = f===formType?'block':'none';
+  });
   const today = new Date().toISOString().split('T')[0];
   if(formType==='preg')   document.getElementById('pc-date').value=today;
   if(formType==='farrow') document.getElementById('fr-date').value=today;
   if(formType==='wean')   document.getElementById('wn-date').value=today;
-  if(sow) _prefillSow(sow, formType);
+  if(sow) {
+    const cycId = sow.sow_id+'-'+(sow.current_parity||0);
+    if(formType==='service') {
+      document.getElementById('sv-sow').value=sow.sow_id;
+      document.getElementById('sv-sow-lbl').textContent=`เบอร์ ${sow.ear_tag} (${sow.sow_id}) · ${statusLabel(sow.status)}`;
+      document.getElementById('sv-sow-btn').classList.add('sel');
+    } else if(formType==='preg') {
+      document.getElementById('pc-cyc').value=cycId;
+      document.getElementById('pc-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ผสมแล้ว`;
+      document.getElementById('pc-cyc-btn').classList.add('sel');
+    } else if(formType==='farrow') {
+      document.getElementById('fr-cyc').value=cycId;
+      document.getElementById('fr-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · ท้องอยู่`;
+      document.getElementById('fr-cyc-btn').classList.add('sel');
+    } else if(formType==='wean') {
+      document.getElementById('wn-cyc').value=cycId;
+      document.getElementById('wn-cyc-lbl').textContent=`เบอร์ ${sow.ear_tag} · ${cycId} · เลี้ยงลูก`;
+      document.getElementById('wn-cyc-btn').classList.add('sel');
+    }
+  }
   window.scrollTo(0,0);
 }
+
 function openCull(id, label) {
   ST.cullSowId = id;
   document.getElementById('cull-label').textContent = label;
@@ -944,39 +997,72 @@ async function loadBoars() {
 // ══════════════════════════════════════════════════════════════
 // SOW PICKER
 // ══════════════════════════════════════════════════════════════
-let _pickerForm = null, _pickerList = [];
+let _pickerForm = null;
+let _pickerList = [];
+
 const PICKER_CFG = {
-  service:{title:'🔬 เลือกแม่สุกร — ผสมพันธุ์',hint:'แสดงเฉพาะแม่สุกรที่ว่าง หรือ ผสมแล้ว',statuses:['OPEN','SERVED'],useCycleId:false,
-    btnId:'sv-sow-btn',lblId:'sv-sow-lbl',hidId:'sv-sow',makeLbl:s=>`เบอร์ ${s.ear_tag} (${s.sow_id}) · ${statusLabel(s.status)}`},
-  preg:{title:'🩺 เลือกแม่สุกร — ตรวจท้อง',hint:'แสดงเฉพาะแม่สุกรที่ผสมแล้ว',statuses:['SERVED'],useCycleId:true,
-    btnId:'pc-cyc-btn',lblId:'pc-cyc-lbl',hidId:'pc-cyc',makeLbl:s=>`เบอร์ ${s.ear_tag} · ${s._cycId}`},
-  farrow:{title:'🐣 เลือกแม่สุกร — บันทึกคลอด',hint:'แสดงเฉพาะแม่สุกรที่ท้องอยู่',statuses:['PREGNANT'],useCycleId:true,
-    btnId:'fr-cyc-btn',lblId:'fr-cyc-lbl',hidId:'fr-cyc',makeLbl:s=>`เบอร์ ${s.ear_tag} · ${s._cycId}`},
-  wean:{title:'🍼 เลือกแม่สุกร — บันทึกหย่านม',hint:'แสดงเฉพาะแม่สุกรที่เลี้ยงลูก',statuses:['LACTATING'],useCycleId:true,
-    btnId:'wn-cyc-btn',lblId:'wn-cyc-lbl',hidId:'wn-cyc',makeLbl:s=>`เบอร์ ${s.ear_tag} · ${s._cycId}`},
+  service: {
+    title: '🔬 เลือกแม่สุกร — ผสมพันธุ์',
+    hint: 'แสดงเฉพาะแม่สุกรที่ว่าง หรือ ผสมแล้ว',
+    statuses: ['OPEN','SERVED'], useCycleId: false,
+    btnId:'sv-sow-btn', lblId:'sv-sow-lbl', hidId:'sv-sow',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} (${s.sow_id}) · ${statusLabel(s.status)}`
+  },
+  preg: {
+    title: '🩺 เลือกแม่สุกร — ตรวจท้อง',
+    hint: 'แสดงเฉพาะแม่สุกรที่ผสมแล้ว รอตรวจท้อง',
+    statuses: ['SERVED'], useCycleId: true,
+    btnId:'pc-cyc-btn', lblId:'pc-cyc-lbl', hidId:'pc-cyc',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} · ${s._cycId} · ผสมแล้ว`
+  },
+  farrow: {
+    title: '🐣 เลือกแม่สุกร — บันทึกคลอด',
+    hint: 'แสดงเฉพาะแม่สุกรที่ท้องอยู่ รอคลอด',
+    statuses: ['PREGNANT'], useCycleId: true,
+    btnId:'fr-cyc-btn', lblId:'fr-cyc-lbl', hidId:'fr-cyc',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} · ${s._cycId} · ท้องอยู่`
+  },
+  wean: {
+    title: '🍼 เลือกแม่สุกร — บันทึกหย่านม',
+    hint: 'แสดงเฉพาะแม่สุกรที่กำลังเลี้ยงลูก',
+    statuses: ['LACTATING'], useCycleId: true,
+    btnId:'wn-cyc-btn', lblId:'wn-cyc-lbl', hidId:'wn-cyc',
+    makeLbl: s=>`เบอร์ ${s.ear_tag} · ${s._cycId} · เลี้ยงลูก`
+  }
 };
+
 function openPicker(formType) {
   _pickerForm = formType;
   const cfg = PICKER_CFG[formType];
   document.getElementById('picker-title').textContent = cfg.title;
   document.getElementById('picker-hint').textContent = cfg.hint;
   document.getElementById('picker-q').value = '';
-  if(ST.sows.length===0){
+  if(ST.sows.length===0) {
     document.getElementById('picker-list').innerHTML='<div class="picker-empty"><span class="pe-ico">⏳</span>กำลังโหลด…</div>';
     openModal('m-sowpicker');
-    api('getSows').then(r=>{if(r.success){ST.sows=r.sows;renderPickerList();}});
-  } else { renderPickerList(); openModal('m-sowpicker'); }
+    api('getSows').then(r=>{ if(r.success){ST.sows=r.sows; renderPickerList();} });
+  } else {
+    renderPickerList();
+    openModal('m-sowpicker');
+  }
 }
+
 function renderPickerList() {
   if(!_pickerForm) return;
   const cfg = PICKER_CFG[_pickerForm];
   const q = (document.getElementById('picker-q').value||'').toLowerCase();
   let list = ST.sows.filter(s=>cfg.statuses.includes(s.status));
-  if(q) list = list.filter(s=>String(s.ear_tag||'').toLowerCase().includes(q)||String(s.sow_id||'').toLowerCase().includes(q));
-  if(cfg.useCycleId) list = list.map(s=>({...s,_cycId:s.sow_id+'-'+(s.current_parity||0)}));
+  if(q) list = list.filter(s=>
+    String(s.ear_tag||'').toLowerCase().includes(q) ||
+    String(s.sow_id||'').toLowerCase().includes(q)
+  );
+  if(cfg.useCycleId) list = list.map(s=>({...s, _cycId:s.sow_id+'-'+(s.current_parity||0)}));
   _pickerList = list;
   const w = document.getElementById('picker-list');
-  if(list.length===0){w.innerHTML=`<div class="picker-empty"><span class="pe-ico">${q?'🔍':'🐷'}</span>${q?'ไม่พบแม่สุกรที่ตรงกัน':'ไม่มีแม่สุกรในสถานะนี้'}</div>`;return;}
+  if(list.length===0) {
+    w.innerHTML=`<div class="picker-empty"><span class="pe-ico">${q?'🔍':'🐷'}</span>${q?'ไม่พบแม่สุกรที่ตรงกัน':'ไม่มีแม่สุกรในสถานะนี้'}</div>`;
+    return;
+  }
   w.innerHTML = list.map((s,i)=>`
     <div class="pi" onclick="selectFromPicker(${i})">
       <span style="font-size:1.75rem;flex-shrink:0">🐷</span>
@@ -988,6 +1074,7 @@ function renderPickerList() {
       <span class="pi-cyc">${cfg.useCycleId?s._cycId:s.sow_id}</span>
     </div>`).join('');
 }
+
 function selectFromPicker(idx) {
   const sow = _pickerList[idx];
   const cfg = PICKER_CFG[_pickerForm];
@@ -996,7 +1083,8 @@ function selectFromPicker(idx) {
   document.getElementById(cfg.btnId).classList.add('sel');
   closeModal('m-sowpicker');
 }
-function resetPickerBtn(btnId,lblId,hidId){
+
+function resetPickerBtn(btnId, lblId, hidId) {
   document.getElementById(hidId).value='';
   document.getElementById(lblId).textContent='— กดเพื่อเลือกแม่สุกร —';
   document.getElementById(btnId).classList.remove('sel');
