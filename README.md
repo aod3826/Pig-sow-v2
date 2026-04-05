@@ -1,17 +1,4 @@
-# นิพนธ์ฟาร์ม — Google Sheets Database Schema
-## Smart Sow Productivity System (PigCHAMP Standard)
 
----
-
-## วิธีตั้งค่า Google Sheets
-
-1. สร้าง Google Spreadsheet ใหม่ ชื่อ "NipponFarm_DB"
-2. สร้าง Sheet ตามรายชื่อด้านล่างทุก Sheet
-3. ตั้งค่า Google Apps Script ตาม Code.gs ที่แนบมา
-4. Deploy เป็น Web App (Execute as: Me, Access: Anyone)
-5. คัดลอก Web App URL ไปใส่ใน script.js ของ Frontend
-
----
 
 ## Sheet 1: SETTINGS (การตั้งค่าฟาร์ม)
 | คอลัมน์ | Header | ตัวอย่าง | หมายเหตุ |
@@ -144,21 +131,3 @@ staff1 | (hash ของ staff1234) | STAFF | สมชาย | TRUE
 
 ---
 
-## ดัชนีสำคัญที่ระบบคำนวณอัตโนมัติ
-
-| KPI | สูตร | เป้าหมาย |
-|-----|------|---------|
-| PSY | (avg_weaned_per_litter × litters_per_year) | > 28 |
-| Farrowing Rate | (farrow_count / service_count) × 100 | > 85% |
-| Pre-weaning Mortality | (live_born - weaned) / live_born × 100 | < 12% |
-| WSI Average | avg(wsi_days) | < 7 วัน |
-| NPD per sow | sum(open_days + wsi_days + return_days) | < 35 วัน/ปี |
-| Gestation Length | avg(actual_farrowing - service_date) | 113-115 วัน |
-
----
-
-## หมายเหตุสำคัญ
-- ห้ามลบ Row ในทุก Sheet ให้ใช้ is_active = FALSE แทน
-- cycle_id ใช้รูปแบบ: sow_id + "-" + parity (เช่น S001-3)
-- การ CULL แม่สุกร: อัปเดต sows.status = CULLED และ sows.is_active = FALSE
-- Backup Google Sheets ทุกสัปดาห์ด้วย File > Download
