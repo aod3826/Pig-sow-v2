@@ -200,6 +200,24 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
   .kgrid{grid-template-columns:repeat(4,1fr)}
   #screen-app{max-width:480px;margin:0 auto;box-shadow:0 0 40px rgba(0,0,0,.15)}
 }
+
+/* ── SOW PICKER ── */
+.sow-pick-btn{width:100%;display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:#FAFAF7;border:1.5px solid var(--border);border-radius:var(--rads);cursor:pointer;text-align:left;font-family:'Sarabun',sans-serif;font-size:.95rem;transition:all .15s;color:var(--muted)}
+.sow-pick-btn:hover,.sow-pick-btn:active{background:var(--g0);border-color:var(--g4)}
+.sow-pick-btn.sel{background:var(--g0);border-color:var(--g6)}
+.sow-pick-btn.sel .spb-lbl{color:var(--g7);font-weight:600}
+.spb-ico{font-size:1.2rem;flex-shrink:0;line-height:1}
+.spb-lbl{flex:1}
+.spb-arr{font-size:1.3rem;line-height:1;flex-shrink:0}
+.pi{display:flex;align-items:center;gap:.875rem;padding:.875rem 0;border-bottom:1px solid var(--bl);cursor:pointer;transition:background .1s}
+.pi:last-child{border-bottom:none}
+.pi:active{background:var(--g0);margin:0 -1.5rem;padding-left:1.5rem;padding-right:1.5rem}
+.pi-info{flex:1;min-width:0}
+.pi-tag{font-size:1rem;font-weight:700;color:var(--text)}
+.pi-meta{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+.pi-cyc{font-size:.74rem;font-family:'IBM Plex Mono',monospace;color:var(--g7);background:var(--g0);padding:2px 8px;border-radius:10px;flex-shrink:0;white-space:nowrap}
+.picker-empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+.picker-empty .pe-ico{font-size:2.5rem;display:block;margin-bottom:.5rem}
 </style>
 </head>
 <body>
@@ -312,7 +330,12 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div id="f-service">
       <div class="card">
         <div class="fsec-title">ข้อมูลการผสม</div>
-        <div class="fg"><label>รหัสแม่สุกร *</label><input id="sv-sow" type="text" placeholder="S001" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="fg"><label>แม่สุกร *</label>
+          <button type="button" class="sow-pick-btn" id="sv-sow-btn" onclick="openPicker('service')">
+            <span class="spb-ico">🐷</span><span id="sv-sow-lbl" class="spb-lbl">— กดเพื่อเลือกแม่สุกร —</span><span class="spb-arr">›</span>
+          </button>
+          <input type="hidden" id="sv-sow">
+        </div>
         <div class="frow">
           <div class="fg"><label>วันที่ผสม *</label><input id="sv-date" type="date" oninput="calcDates()"></div>
           <div class="fg"><label>พ่อพันธุ์ *</label><select id="sv-boar"><option value="">— เลือก —</option></select></div>
@@ -343,7 +366,12 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div id="f-preg" style="display:none">
       <div class="card">
         <div class="fsec-title">ผลตรวจการตั้งท้อง</div>
-        <div class="fg"><label>รหัสวงจร *</label><input id="pc-cyc" type="text" placeholder="S001-4" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="fg"><label>แม่สุกร *</label>
+          <button type="button" class="sow-pick-btn" id="pc-cyc-btn" onclick="openPicker('preg')">
+            <span class="spb-ico">🐷</span><span id="pc-cyc-lbl" class="spb-lbl">— กดเพื่อเลือกแม่สุกร —</span><span class="spb-arr">›</span>
+          </button>
+          <input type="hidden" id="pc-cyc">
+        </div>
         <div class="frow">
           <div class="fg"><label>รอบตรวจ</label>
             <div class="rgroup" style="margin-top:.4rem">
@@ -370,7 +398,12 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div id="f-farrow" style="display:none">
       <div class="card">
         <div class="fsec-title">ข้อมูลการคลอด</div>
-        <div class="fg"><label>รหัสวงจร *</label><input id="fr-cyc" type="text" placeholder="S001-4" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="fg"><label>แม่สุกร *</label>
+          <button type="button" class="sow-pick-btn" id="fr-cyc-btn" onclick="openPicker('farrow')">
+            <span class="spb-ico">🐷</span><span id="fr-cyc-lbl" class="spb-lbl">— กดเพื่อเลือกแม่สุกร —</span><span class="spb-arr">›</span>
+          </button>
+          <input type="hidden" id="fr-cyc">
+        </div>
         <div class="frow">
           <div class="fg"><label>วันที่คลอด *</label><input id="fr-date" type="date"></div>
           <div class="fg"><label>น้ำหนักรวม (kg)</label><input id="fr-bw" type="number" placeholder="0.0" step="0.1" min="0"></div>
@@ -390,7 +423,12 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <div id="f-wean" style="display:none">
       <div class="card">
         <div class="fsec-title">ข้อมูลการหย่านม</div>
-        <div class="fg"><label>รหัสวงจร *</label><input id="wn-cyc" type="text" placeholder="S001-4" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="fg"><label>แม่สุกร *</label>
+          <button type="button" class="sow-pick-btn" id="wn-cyc-btn" onclick="openPicker('wean')">
+            <span class="spb-ico">🐷</span><span id="wn-cyc-lbl" class="spb-lbl">— กดเพื่อเลือกแม่สุกร —</span><span class="spb-arr">›</span>
+          </button>
+          <input type="hidden" id="wn-cyc">
+        </div>
         <div class="frow">
           <div class="fg"><label>วันที่หย่านม *</label><input id="wn-date" type="date"></div>
           <div class="fg"><label>จำนวนลูกหย่านม *</label><input id="wn-cnt" type="number" placeholder="0" min="0"></div>
@@ -426,6 +464,20 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min
     <button class="ni" onclick="go('record')" id="n-record"><span class="ico">✏️</span><span>บันทึก</span></button>
     <button class="ni" onclick="go('reports')" id="n-reports"><span class="ico">📊</span><span>รายงาน</span></button>
     <button class="ni" onclick="go('settings')" id="n-settings"><span class="ico">⚙️</span><span>ตั้งค่า</span></button>
+  </div>
+</div>
+
+<!-- MODAL: SOW PICKER -->
+<div class="overlay" id="m-sowpicker">
+  <div class="sheet" style="max-height:82vh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)">
+    <div class="handle"></div>
+    <div class="mtitle" id="picker-title">🐷 เลือกแม่สุกร</div>
+    <div style="margin-bottom:.875rem">
+      <input type="search" id="picker-q" placeholder="🔍 ค้นหาเบอร์หู หรือ รหัส…" oninput="renderPickerList()"
+        style="width:100%;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--rads);font-family:'Sarabun',sans-serif;font-size:.95rem;background:#FAFAF7;outline:none">
+    </div>
+    <div id="picker-hint" style="font-size:.8rem;color:var(--muted);margin-bottom:.625rem;padding:0 .125rem"></div>
+    <div id="picker-list" style="overflow-y:auto;flex:1;margin:0 -1.5rem;padding:0 1.5rem"></div>
   </div>
 </div>
 
@@ -796,6 +848,113 @@ async function loadBoars() {
 }
 
 // ══════════════════════════════════════════════════════════════
+// SOW PICKER — เลือกแม่สุกรจากรายการ แทนการพิมพ์ ID
+// ══════════════════════════════════════════════════════════════
+let _pickerForm = null;
+let _pickerList = [];
+
+const PICKER_CFG = {
+  service: {
+    title: '🔬 เลือกแม่สุกร — ผสมพันธุ์',
+    hint: 'แสดงเฉพาะแม่สุกรสถานะ: ว่าง หรือ ผสมแล้ว',
+    statuses: ['OPEN', 'SERVED'],
+    useCycleId: false,
+    btnId: 'sv-sow-btn', lblId: 'sv-sow-lbl', hidId: 'sv-sow',
+    makeLbl: s => `เบอร์ ${s.ear_tag} (${s.sow_id}) · ${statusLabel(s.status)}`
+  },
+  preg: {
+    title: '🩺 เลือกแม่สุกร — ตรวจท้อง',
+    hint: 'แสดงเฉพาะแม่สุกรที่ผสมแล้ว รอตรวจท้อง',
+    statuses: ['SERVED'],
+    useCycleId: true,
+    btnId: 'pc-cyc-btn', lblId: 'pc-cyc-lbl', hidId: 'pc-cyc',
+    makeLbl: s => `เบอร์ ${s.ear_tag} · ${s._cycId} · ผสมแล้ว`
+  },
+  farrow: {
+    title: '🐣 เลือกแม่สุกร — บันทึกคลอด',
+    hint: 'แสดงเฉพาะแม่สุกรที่ท้องอยู่ รอคลอด',
+    statuses: ['PREGNANT'],
+    useCycleId: true,
+    btnId: 'fr-cyc-btn', lblId: 'fr-cyc-lbl', hidId: 'fr-cyc',
+    makeLbl: s => `เบอร์ ${s.ear_tag} · ${s._cycId} · ท้องอยู่`
+  },
+  wean: {
+    title: '🍼 เลือกแม่สุกร — บันทึกหย่านม',
+    hint: 'แสดงเฉพาะแม่สุกรที่กำลังเลี้ยงลูก',
+    statuses: ['LACTATING'],
+    useCycleId: true,
+    btnId: 'wn-cyc-btn', lblId: 'wn-cyc-lbl', hidId: 'wn-cyc',
+    makeLbl: s => `เบอร์ ${s.ear_tag} · ${s._cycId} · เลี้ยงลูก`
+  }
+};
+
+function openPicker(formType) {
+  _pickerForm = formType;
+  const cfg = PICKER_CFG[formType];
+  document.getElementById('picker-title').textContent = cfg.title;
+  document.getElementById('picker-hint').textContent = cfg.hint;
+  document.getElementById('picker-q').value = '';
+  if (ST.sows.length === 0) {
+    document.getElementById('picker-list').innerHTML = '<div class="picker-empty"><span class="pe-ico">⏳</span>กำลังโหลด…</div>';
+    openModal('m-sowpicker');
+    api('getSows').then(r => {
+      if (r.success) { ST.sows = r.sows; renderPickerList(); }
+    });
+  } else {
+    renderPickerList();
+    openModal('m-sowpicker');
+  }
+}
+
+function renderPickerList() {
+  if (!_pickerForm) return;
+  const cfg = PICKER_CFG[_pickerForm];
+  const q = (document.getElementById('picker-q').value || '').toLowerCase();
+  let list = ST.sows.filter(s => cfg.statuses.includes(s.status));
+  if (q) list = list.filter(s =>
+    String(s.ear_tag || '').toLowerCase().includes(q) ||
+    String(s.sow_id || '').toLowerCase().includes(q)
+  );
+  if (cfg.useCycleId) {
+    list = list.map(s => ({ ...s, _cycId: s.sow_id + '-' + (s.current_parity || 0) }));
+  }
+  _pickerList = list;
+  const w = document.getElementById('picker-list');
+  if (list.length === 0) {
+    w.innerHTML = `<div class="picker-empty"><span class="pe-ico">${q ? '🔍' : '🐷'}</span>${q ? 'ไม่พบแม่สุกรที่ตรงกัน' : 'ไม่มีแม่สุกรในสถานะนี้'}</div>`;
+    return;
+  }
+  w.innerHTML = list.map((s, i) => `
+    <div class="pi" onclick="selectFromPicker(${i})">
+      <span style="font-size:1.75rem;flex-shrink:0">🐷</span>
+      <div class="pi-info">
+        <div class="pi-tag">เบอร์หู ${s.ear_tag}</div>
+        <div class="pi-meta">${s.breed || '—'} · ท้องที่ ${s.current_parity || 0} · ${s.location || '—'}</div>
+      </div>
+      <span class="sstatus" style="${statusStyle(s.status)}">${statusLabel(s.status)}</span>
+      <span class="pi-cyc">${cfg.useCycleId ? s._cycId : s.sow_id}</span>
+    </div>`).join('');
+}
+
+function selectFromPicker(idx) {
+  const sow = _pickerList[idx];
+  const cfg = PICKER_CFG[_pickerForm];
+  // fill hidden input (sow_id หรือ cycle_id)
+  const val = cfg.useCycleId ? sow._cycId : sow.sow_id;
+  document.getElementById(cfg.hidId).value = val;
+  // update button label & style
+  document.getElementById(cfg.lblId).textContent = cfg.makeLbl(sow);
+  document.getElementById(cfg.btnId).classList.add('sel');
+  closeModal('m-sowpicker');
+}
+
+function resetPickerBtn(btnId, lblId, hidId) {
+  document.getElementById(hidId).value = '';
+  document.getElementById(lblId).textContent = '— กดเพื่อเลือกแม่สุกร —';
+  document.getElementById(btnId).classList.remove('sel');
+}
+
+// ══════════════════════════════════════════════════════════════
 // RECORD FORMS
 // ══════════════════════════════════════════════════════════════
 function setForm(type,btn) {
@@ -820,7 +979,7 @@ async function submitService() {
   btnState('btn-sv',true);
   const r = await api('recordService',{sow_id:sow,service_date:date,boar_id:boar,technician:document.getElementById('sv-tech').value,service_type:document.getElementById('sv-type').value,notes:document.getElementById('sv-note').value});
   btnState('btn-sv',false,'✅ บันทึกการผสม');
-  if(r.success){ toast(r.message,'ok'); document.getElementById('sv-sow').value=''; document.getElementById('calc-box').style.display='none'; ST.sows=[]; loadDashboard(); loadSows(); }
+  if(r.success){ toast(r.message,'ok'); resetPickerBtn('sv-sow-btn','sv-sow-lbl','sv-sow'); document.getElementById('calc-box').style.display='none'; ST.sows=[]; loadDashboard(); loadSows(); }
   else toast(r.error,'err');
 }
 async function submitPreg() {
@@ -829,7 +988,7 @@ async function submitPreg() {
   btnState('btn-pc',true);
   const r = await api('recordPregCheck',{cycle_id:cyc,check_round:document.getElementById('pc-round').value,check_date:date,result:document.getElementById('pc-res').value});
   btnState('btn-pc',false,'✅ บันทึกผลตรวจ');
-  if(r.success){ toast(r.message,'ok'); document.getElementById('pc-cyc').value=''; ST.sows=[]; loadDashboard(); loadSows(); }
+  if(r.success){ toast(r.message,'ok'); resetPickerBtn('pc-cyc-btn','pc-cyc-lbl','pc-cyc'); ST.sows=[]; loadDashboard(); loadSows(); }
   else toast(r.error,'err');
 }
 async function submitFarrow() {
@@ -838,7 +997,7 @@ async function submitFarrow() {
   btnState('btn-fr',true);
   const r = await api('recordFarrowing',{cycle_id:cyc,farrowing_date:date,live_born:parseInt(live)||0,stillborn:parseInt(document.getElementById('fr-dead').value)||0,mummy:parseInt(document.getElementById('fr-mum').value)||0,birth_weight_total:parseFloat(document.getElementById('fr-bw').value)||0,notes:document.getElementById('fr-note').value});
   btnState('btn-fr',false,'✅ บันทึกการคลอด');
-  if(r.success){ toast(r.message+' (อุ้มท้อง '+r.gestation_length+' วัน)','ok'); document.getElementById('fr-cyc').value=''; ST.sows=[]; loadDashboard(); loadSows(); }
+  if(r.success){ toast(r.message+' (อุ้มท้อง '+r.gestation_length+' วัน)','ok'); resetPickerBtn('fr-cyc-btn','fr-cyc-lbl','fr-cyc'); ST.sows=[]; loadDashboard(); loadSows(); }
   else toast(r.error,'err');
 }
 async function submitWean() {
@@ -847,7 +1006,7 @@ async function submitWean() {
   btnState('btn-wn',true);
   const r = await api('recordWeaning',{cycle_id:cyc,weaning_date:date,weaned_count:parseInt(cnt)||0,weaning_weight_total:parseFloat(document.getElementById('wn-wt').value)||0});
   btnState('btn-wn',false,'✅ บันทึกการหย่านม');
-  if(r.success){ toast(r.message,'ok'); document.getElementById('wn-cyc').value=''; ST.sows=[]; loadDashboard(); loadSows(); }
+  if(r.success){ toast(r.message,'ok'); resetPickerBtn('wn-cyc-btn','wn-cyc-lbl','wn-cyc'); ST.sows=[]; loadDashboard(); loadSows(); }
   else toast(r.error,'err');
 }
 
