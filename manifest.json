@@ -1,0 +1,76 @@
+{
+  "name": "นิพนธ์ฟาร์ม - Smart Sow Productivity System",
+  "short_name": "นิพนธ์ฟาร์ม",
+  "description": "ระบบจัดการแม่สุกรอัจฉริยะ - Smart Sow Productivity System สำหรับฟาร์มเลี้ยงสุกร",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#28A444",
+  "prefer_related_applications": false,
+  "screenshots": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192x192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "ไปที่หน้าแรก Dashboard",
+      "url": "/index.html?page=dashboard",
+      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "แม่สุกร",
+      "short_name": "Sows",
+      "description": "ดูทะเบียนแม่สุกรทั้งหมด",
+      "url": "/index.html?page=sows",
+      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "บันทึกข้อมูล",
+      "short_name": "Record",
+      "description": "บันทึกข้อมูลวงจรการผลิต",
+      "url": "/index.html?page=record",
+      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

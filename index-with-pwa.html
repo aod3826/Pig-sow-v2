@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#28A444">
+<meta name="description" content="นิพนธ์ฟาร์ม - Smart Sow Productivity System for pig farm management">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="นิพนธ์ฟาร์ม">
+<link rel="apple-touch-icon" href="icon-192x192.png">
+<link rel="manifest" href="manifest.json">
+<title>นิพนธ์ฟาร์ม</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="farm.css">
+<style>
+  /* PWA Install banner styling */
+  .install-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--p5);
+    color: white;
+    padding: 1rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 1000;
+    border-top: 3px solid var(--a3);
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  .install-banner.show { display: flex; }
+  
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  
+  .install-banner-text {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .install-banner-buttons {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .install-banner-buttons button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .install-btn {
+    background: var(--a3);
+    color: var(--n9);
+  }
+  
+  .install-btn:active {
+    transform: scale(0.98);
+  }
+  
+  .dismiss-btn {
+    background: rgba(255,255,255,0.2);
+    color: white;
+  }
+  
+  .dismiss-btn:active {
+    background: rgba(255,255,255,0.3);
+  }
+  
+  /* Connection status indicator */
+  .conn-indicator {
+    position: relative;
+  }
+  
+  .conn-indicator::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #28A444;
+    animation: pulse 2s infinite;
+  }
+  
+  .conn-indicator.offline::before {
+    background: #E84040;
+    animation: none;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loader-overlay" id="ldr"><div class="spinner"></div><p id="loader-text">กำลังโหลด…</p></div>
+<div class="toasts" id="toasts"></div>
+
+<!-- PWA Install Banner -->
+<div class="install-banner" id="install-banner">
+  <div class="install-banner-text">
+    <span>📲 ติดตั้ง นิพนธ์ฟาร์ม เป็น App</span>
+  </div>
+  <p style="font-size: 0.85rem; margin: 0; opacity: 0.9;">เข้าใช้งานได้เหมือน App จริง บนมือถือของคุณ</p>
+  <div class="install-banner-buttons">
+    <button class="install-btn" id="install-btn">ติดตั้ง</button>
+    <button class="dismiss-btn" id="dismiss-btn">ปิด</button>
+  </div>
+</div>
+
+<!-- ════════ LOGIN ════════ -->
+<div class="screen active" id="screen-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="pig">🐷</span>
+      <h1>นิพนธ์ฟาร์ม</h1>
+      <p>Smart Sow Productivity System v2.0</p>
+    </div>
+    <div id="conn-banner" class="conn-banner checking">⏳ กำลังเชื่อมต่อ Google Sheets…</div>
+    <button class="user-btn" onclick="doLogin('aod','aod1234','ADMIN','คุณนิพนธ์')">
+      <span class="user-icon">👑</span>
+      <div><div class="user-name">คุณนิพนธ์</div><div class="user-role">เจ้าของฟาร์ม (Admin)</div></div>
+      <span style="margin-left:auto;font-size:1.5rem;color:var(--g4)">›</span>
+    </button>
+    <button class="user-btn" onclick="doLogin('staff1','staff1234','STAFF','สมชาย')">
+      <span class="user-icon">👷</span>
+      <div><div class="user-name">สมชาย</div><div class="user-role">พนักงาน (Staff)</div></div>
+      <span style="margin-left:auto;font-size:1.5rem;color:var(--g4)">›</span>
+    </button>
+    <button class="user-btn" onclick="doLogin('staff2','staff1234','STAFF','สมหญิง')">
+      <span class="user-icon">👷</span>
+      <div><div class="user-name">สมหญิง</div><div class="user-role">พนักงาน (Staff)</div></div>
+      <span style="margin-left:auto;font-size:1.5rem;color:var(--g4)">›</span>
+    </button>
+    <div id="login-err" class="login-err"></div>
+  </div>
+</div>
+
+<!-- ════════ APP ════════ -->
+<div class="screen" id="screen-app">
+  <div class="app-bar">
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <span style="font-size:1.3rem">🐷</span>
+      <h2 id="page-title">Dashboard</h2>
+    </div>
+    <div class="bar-right">
+      <span class="dot conn-indicator" id="conn-dot"></span>
+      <span class="ubadge" id="uname">—</span>
+      <button class="hbtn" onclick="logout()">⬚</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="srow">
+      <div class="spill sp-o">⚪ ว่าง <strong id="c-open">—</strong></div>
+      <div class="spill sp-s">🔵 ผสม <strong id="c-served">—</strong></div>
+      <div class="spill sp-p">🟡 ท้อง <strong id="c-preg">—</strong></div>
+      <div class="spill sp-l">🔴 เลี้ยงลูก <strong id="c-lac">—</strong></div>
+    </div>
+    <div class="kgrid">
+      <div class="kcard"><div class="klabel">แม่พันธุ์ทั้งหมด</div><div class="kval" id="k-sows">—</div><div class="ksub">ตัว active</div></div>
+      <div class="kcard kt"><div class="klabel">PSY</div><div class="kval" id="k-psy">—</div><div class="ksub">ลูก/แม่/ปี</div></div>
+      <div class="kcard"><div class="klabel">Live Born เฉลี่ย</div><div class="kval" id="k-lb">—</div><div class="ksub">ตัว/ครอก</div></div>
+      <div class="kcard ka"><div class="klabel">WSI เฉลี่ย</div><div class="kval" id="k-wsi">—</div><div class="ksub">วัน</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem">
+        <span class="ctitle">📋 งานที่ต้องทำวันนี้</span>
+        <span id="task-badge" style="background:var(--r0);color:var(--r6);font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:10px"></span>
+      </div>
+      <div id="tasks-wrap"><div class="empty"><span class="eico">⏳</span>กำลังโหลด…</div></div>
+    </div>
+    <div class="card" style="margin-top:.75rem">
+      <div class="ctitle" style="margin-bottom:.5rem">📊 Live Born ล่าสุด</div>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SOWS -->
+  <div class="page" id="page-sows">
+    <div class="sbar">
+      <input type="search" id="sow-q" placeholder="🔍 ค้นหาเบอร์หู / รหัส…" oninput="renderSows()">
+      <button class="btn btn-p btn-sm" style="width:auto" onclick="openModal('m-addsow')">+ เพิ่ม</button>
+    </div>
+    <div class="ftabs">
+      <button class="ftab active" onclick="setFilter('ALL',this)">ทั้งหมด</button>
+      <button class="ftab" onclick="setFilter('OPEN',this)">ว่าง</button>
+      <button class="ftab" onclick="setFilter('SERVED',this)">ผสมแล้ว</button>
+      <button class="ftab" onclick="setFilter('PREGNANT',this)">ท้อง</button>
+      <button class="ftab" onclick="setFilter('LACTATING',this)">เลี้ยงลูก</button>
+    </div>
+    <div id="sow-list"><div class="empty"><span class="eico">🐷</span>กำลังโหลด…</div></div>
+  </div>
+
+  <!-- SOW DETAIL -->
+  <div class="page" id="page-sow-detail">
+    <div class="back-nav"><button onclick="showPage('page-sows')" style="background:none;border:none;font-size:1.5rem;padding:0.5rem;cursor:pointer">⬅</button></div>
+    <div id="sow-detail-content"></div>
+  </div>
+
+  <!-- RECORD -->
+  <div class="page" id="page-record">
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;overflow-x:auto;padding:0 1rem">
+      <button class="rec-tab active" data-tab="service">🔵 ผสม</button>
+      <button class="rec-tab" data-tab="preg">🟡 ตรวจท้อง</button>
+      <button class="rec-tab" data-tab="farr">🔴 คลอด</button>
+      <button class="rec-tab" data-tab="wean">🟢 หย่านม</button>
+    </div>
+    <div id="record-forms"></div>
+  </div>
+
+  <!-- REPORTS -->
+  <div class="page" id="page-reports">
+    <div id="reports-content"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="page-settings">
+    <div id="settings-content"></div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="showPage('page-dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" onclick="showPage('page-sows')">🐷 แม่สุกร</button>
+    <button class="nav-btn" onclick="showPage('page-record')">📝 บันทึก</button>
+    <button class="nav-btn" onclick="showPage('page-reports')">📈 รายงาน</button>
+    <button class="nav-btn" onclick="showPage('page-settings')">⚙️ ตั้งค่า</button>
+  </div>
+</div>
+
+<!-- ════════ MODALS ════════ -->
+<!-- Add Sow Modal -->
+<div class="modal" id="m-addsow">
+  <div class="modal-bg" onclick="closeModal('m-addsow')"></div>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>เพิ่มแม่สุกรใหม่</h3>
+      <button onclick="closeModal('m-addsow')" class="close-btn">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" id="new-ear-tag" placeholder="เบอร์หู (ear tag)" class="input">
+      <input type="text" id="new-breed" placeholder="สายพันธุ์ (เช่น LW×L)" class="input">
+      <input type="date" id="new-birth-date" class="input" placeholder="วันเกิด">
+      <input type="date" id="new-entry-date" class="input" placeholder="วันเข้าฟาร์ม">
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('m-addsow')" class="btn btn-outline">ยกเลิก</button>
+      <button onclick="doAddSow()" class="btn btn-p">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ═══════════════════════════════════════════════════════════
+  // 🔐 API Configuration
+  // ═══════════════════════════════════════════════════════════
+  const API = "https://script.google.com/macros/s/AKfycbxojGj0LzZFLFFnUAO0A2wHYjaM1GewPPWhwKJ2eutwm3G4pM0tJwlMI8fk0-jJKgmrpQ/exec";
+  
+  // ═══════════════════════════════════════════════════════════
+  // 🔄 Service Worker Registration
+  // ═══════════════════════════════════════════════════════════
+  window.addEventListener('load', () => {
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then((reg) => {
+          console.log('✅ Service Worker registered:', reg);
+          // Update checker
+          setInterval(() => {
+            reg.update();
+          }, 3600000); // Check every hour
+        })
+        .catch((err) => {
+          console.warn('⚠️ Service Worker registration failed:', err);
+        });
+    }
+    
+    // PWA Install Banner
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('install-banner');
+      banner.classList.add('show');
+      
+      document.getElementById('install-btn').addEventListener('click', () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('✅ PWA installed');
+              banner.classList.remove('show');
+            }
+            deferredPrompt = null;
+          });
+        }
+      });
+      
+      document.getElementById('dismiss-btn').addEventListener('click', () => {
+        banner.classList.remove('show');
+        deferredPrompt = null;
+      });
+    });
+    
+    // Handle app installed
+    window.addEventListener('appinstalled', () => {
+      console.log('🎉 App was successfully installed!');
+      document.getElementById('install-banner').classList.remove('show');
+    });
+  });
+  
+  // ═══════════════════════════════════════════════════════════
+  // 💾 Global State
+  // ═══════════════════════════════════════════════════════════
+  const ST = {
+    user: null,
+    sows: [],
+    boars: [],
+    settings: {},
+    filterStatus: "ALL",
+    cullSowId: null,
+    isOnline: navigator.onLine
+  };
+  
+  // Online/Offline indicator
+  window.addEventListener('online', () => {
+    ST.isOnline = true;
+    document.getElementById('conn-dot').classList.remove('offline');
+    showToast('✅ เชื่อมต่ออินเทอร์เน็ตแล้ว', 'success');
+  });
+  
+  window.addEventListener('offline', () => {
+    ST.isOnline = false;
+    document.getElementById('conn-dot').classList.add('offline');
+    showToast('⚠️ ไม่มีการเชื่อมต่ออินเทอร์เน็ต', 'warning');
+  });
+  
+  // ═══════════════════════════════════════════════════════════
+  // 🚀 API Caller (unchanged from original)
+  // ═══════════════════════════════════════════════════════════
+  async function callAPI(action, payload = {}) {
+    const url = API + '?action=' + encodeURIComponent(action) + '&payload=' + encodeURIComponent(JSON.stringify(payload));
+    try {
+      const res = await fetch(url, { method: 'GET', redirect: 'follow', cache: 'no-store' });
+      const data = JSON.parse(await res.text());
+      return data;
+    } catch (err) {
+      console.error('❌ API Error:', err);
+      showToast('❌ เชื่อมต่อไม่ได้', 'error');
+      return { success: false, error: err.message };
+    }
+  }
+  
+  // Test connection on startup
+  window.addEventListener('load', () => {
+    callAPI('ping').then((res) => {
+      const banner = document.getElementById('conn-banner');
+      if (res.success) {
+        banner.innerHTML = '✅ เชื่อมต่อสำเร็จ';
+        banner.className = 'conn-banner success';
+      } else {
+        banner.innerHTML = '❌ เชื่อมต่อไม่ได้ — ตรวจ API URL';
+        banner.className = 'conn-banner error';
+      }
+    });
+  });
+  
+  // ═══════════════════════════════════════════════════════════
+  // 🎨 UI Functions (rest remains the same)
+  // ═══════════════════════════════════════════════════════════
+  
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    event.target.closest('.nav-btn')?.classList.add('active');
+  }
+  
+  function showToast(msg, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.textContent = msg;
+    document.getElementById('toasts').appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+  
+  function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'flex';
+  }
+  
+  function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+  }
+  
+  // Login functions (unchanged)
+  async function doLogin(username, password, role, display_name) {
+    showLoader('กำลังเข้าสู่ระบบ…');
+    const res = await callAPI('login', { username, password });
+    hideLoader();
+    if (res.success) {
+      ST.user = res.user || { username, role, display_name };
+      loadDashboard();
+      document.getElementById('screen-login').classList.remove('active');
+      document.getElementById('screen-app').classList.add('active');
+      document.getElementById('uname').textContent = ST.user.display_name;
+    } else {
+      showToast('❌ Login failed', 'error');
+    }
+  }
+  
+  function logout() {
+    ST.user = null;
+    document.getElementById('screen-app').classList.remove('active');
+    document.getElementById('screen-login').classList.add('active');
+  }
+  
+  function showLoader(text = 'กำลังโหลด…') {
+    document.getElementById('loader-text').textContent = text;
+    document.getElementById('ldr').style.display = 'flex';
+  }
+  
+  function hideLoader() {
+    document.getElementById('ldr').style.display = 'none';
+  }
+  
+  // Dashboard (stub)
+  async function loadDashboard() {
+    const res = await callAPI('getDashboard');
+    if (res.success) {
+      console.log('Dashboard loaded:', res.data);
+      // Update UI (implement full dashboard logic)
+    }
+  }
+  
+  // Add Sow (stub)
+  async function doAddSow() {
+    const ear_tag = document.getElementById('new-ear-tag').value;
+    const breed = document.getElementById('new-breed').value;
+    const res = await callAPI('addSow', { ear_tag, breed });
+    if (res.success) {
+      showToast('✅ เพิ่มแม่สุกรสำเร็จ', 'success');
+      closeModal('m-addsow');
+    } else {
+      showToast('❌ เพิ่มไม่ได้', 'error');
+    }
+  }
+  
+  // Initialize
+  console.log('🐷 นิพนธ์ฟาร์ม v2.0 loaded');
+</script>
+
+</body>
+</html>
